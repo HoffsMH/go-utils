@@ -3,7 +3,6 @@ package util
 import (
   "path/filepath"
   "regexp"
-  "strings"
   "path"
   "os"
 )
@@ -14,17 +13,9 @@ type FileContent struct {
 	Dir     string
 }
 
-func getLines(path string) []string {
-	absPath, _ := filepath.Abs(path)
-	text, _ := readFile(absPath)
-	return strings.Split(text, "\n")
-}
-
-func Hsplit(filename string, dir string) []FileContent {
-  abs, _ := filepath.Abs(filename)
+func Hsplit(lines []string, dir string) []FileContent {
 	var result []FileContent
 
-  lines := getLines(abs)
 	r := regexp.MustCompile(heading + " (.*)")
 
   for _, line := range lines {
@@ -43,6 +34,7 @@ func Hsplit(filename string, dir string) []FileContent {
 		}
   }
 
+  WriteSplits(pruneEmptyFileContents(result))
 	return pruneEmptyFileContents(result)
 }
 

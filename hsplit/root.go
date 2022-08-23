@@ -10,12 +10,11 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use: "hsplit",
-	Args: cobra.MinimumNArgs(2),
+	Args: cobra.MinimumNArgs(0),
   Run: func(cmd *cobra.Command, args []string) {
-		terms := util.GetTerms(args)
     // filename
     // dir
-		fmt.Println(util.Hsplit(terms[0], args[1]))
+		fmt.Println(util.Hsplit(stdin(), args[0]))
   },
 }
 
@@ -26,7 +25,7 @@ func main() {
 	}
 }
 
-func Stdin() []string {
+func stdin() []string {
   var lines []string
   scanner := bufio.NewScanner(os.Stdin)
   for scanner.Scan() {
