@@ -14,7 +14,7 @@ var rootCmd = &cobra.Command{
   Run: func(cmd *cobra.Command, args []string) {
     // filename
     // dir
-		fmt.Println(util.Hsplit(stdin(), args[0]))
+    util.Hsplit(stdin(), args[0])
   },
 }
 

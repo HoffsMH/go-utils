@@ -7,7 +7,6 @@ import (
 	"path"
 	"path/filepath"
 	"time"
-
 	"github.com/araddon/dateparse"
 )
 
@@ -62,12 +61,12 @@ func parseDateFileName(fn string) (time.Time, error) {
 	if len(fn) < 10 {
 		return time.Now(), errors.New("not long enough to contain a date")
 	}
-
+  base := filepath.Base(fn)
   datelengths := []int{25,10,7,4}
 
   for _,dl := range datelengths {
-    if len(fn) >= dl {
-      datePortion := fn[:dl]
+    if len(base) >= dl {
+      datePortion := base[:dl]
       dateOutput, err := parseDate(datePortion)
       if err == nil {
         return dateOutput, nil
