@@ -11,12 +11,16 @@ type TimeRange struct {
 	Days   int
 }
 
-func TFilter(filnames []string, tr *TimeRange) []string {
+func TFilter(filnames []string, tr *TimeRange, ignore bool) []string {
   var results []string
   timeHoriz := time.Now().AddDate(-tr.Months, -tr.Weeks, -tr.Days - 2)
   for _, filename := range filnames {
     abs, _ := filepath.Abs(filename)
-    t, _ := parseDateFileName(filename)
+    t, err := parseDateFileName(filename)
+
+    if ignore && err != nil {
+      continue
+    }
 
     if t.After(timeHoriz) {
       results = append(results, abs)
