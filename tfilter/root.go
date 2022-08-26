@@ -11,6 +11,7 @@ import (
 var days int
 var weeks int
 var months int
+var ignore bool
 
 var rootCmd = &cobra.Command{
 	Use: "tfilter",
@@ -24,7 +25,7 @@ var rootCmd = &cobra.Command{
       Days: days,
     }
 
-    printlist(util.TFilter(terms, tr))
+    printlist(util.TFilter(terms, tr, ignore))
   },
 }
 
@@ -60,6 +61,7 @@ func init() {
   rootCmd.Flags().IntVarP(&days, "days", "d", 2, "the amount of days to look back.")
   rootCmd.Flags().IntVarP(&weeks, "weeks", "w", 0, "the amount of weeks to look back.")
   rootCmd.Flags().IntVarP(&months, "months", "m", 0, "the amount of months to look back.")
+  rootCmd.Flags().BoolVarP(&ignore, "ignore", "i", true, "ignore filenames with errors")
 }
 
 
