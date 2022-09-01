@@ -13,7 +13,7 @@ type FileContent struct {
 	Dir     string
 }
 
-func Hsplit(lines []string, dir string) []FileContent {
+func Hsplit(lines []string, dir string) {
 	var result []FileContent
 
 	r := regexp.MustCompile(heading + " (.*)")
@@ -33,9 +33,9 @@ func Hsplit(lines []string, dir string) []FileContent {
 			result = append([]FileContent{newFileContent(match[1], dir)}, result...)
 		}
   }
+  result = pruneEmptyFileContents(result)
 
-  WriteSplits(pruneEmptyFileContents(result))
-	return pruneEmptyFileContents(result)
+  WriteSplits(result)
 }
 
 func pruneEmptyFileContents(fcs []FileContent) []FileContent {

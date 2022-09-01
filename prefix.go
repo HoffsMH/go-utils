@@ -10,8 +10,6 @@ import (
 	"github.com/araddon/dateparse"
 )
 
-var parseDate = dateparse.ParseAny
-
 func nowISODate() string {
 	return time.Now().Format(time.RFC3339)
 }
@@ -67,7 +65,7 @@ func parseDateFileName(fn string) (time.Time, error) {
   for _,dl := range datelengths {
     if len(base) >= dl {
       datePortion := base[:dl]
-      dateOutput, err := parseDate(datePortion)
+      dateOutput, err := dateparse.ParseAny(datePortion)
       if err == nil {
         return dateOutput, nil
       }
