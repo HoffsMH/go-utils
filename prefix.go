@@ -3,11 +3,11 @@ package util
 import (
 	"errors"
 	"fmt"
+	"github.com/araddon/dateparse"
 	"os"
 	"path"
 	"path/filepath"
 	"time"
-	"github.com/araddon/dateparse"
 )
 
 func nowISODate() string {
@@ -31,9 +31,9 @@ func PrefixFiles(filepaths []string) {
 			newbasename := prependCurrentISODate(oldbasename)
 			newabs := filepath.Join(dir, newbasename)
 			fmt.Println(newabs)
-      os.Rename(oldabs, newabs)
-		} 
-  }
+			os.Rename(oldabs, newabs)
+		}
+	}
 }
 
 // given a string -- outputs a filepath prefixed with current date
@@ -59,18 +59,18 @@ func parseDateFileName(fn string) (time.Time, error) {
 	if len(fn) < 10 {
 		return time.Now(), errors.New("not long enough to contain a date")
 	}
-  base := filepath.Base(fn)
-  datelengths := []int{25,10,7,4}
+	base := filepath.Base(fn)
+	datelengths := []int{25, 10, 7, 4}
 
-  for _,dl := range datelengths {
-    if len(base) >= dl {
-      datePortion := base[:dl]
-      dateOutput, err := dateparse.ParseAny(datePortion)
-      if err == nil {
-        return dateOutput, nil
-      }
-    }
-  }
+	for _, dl := range datelengths {
+		if len(base) >= dl {
+			datePortion := base[:dl]
+			dateOutput, err := dateparse.ParseAny(datePortion)
+			if err == nil {
+				return dateOutput, nil
+			}
+		}
+	}
 
 	return time.Now(), errors.New("No date detected")
 }

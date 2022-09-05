@@ -24,15 +24,15 @@ func ensureNewline(s string) string {
 }
 
 func Hcat(filenames []string) string {
-  var text string
-  for _, filename := range filenames {
-    abs, _ := filepath.Abs(filename)
+	var text string
+	for _, filename := range filenames {
+		abs, _ := filepath.Abs(filename)
 		basename := path.Base(abs)
-    content, _ := readFile(abs)
+		content, _ := readFile(abs)
 
-    text += plainTextHeading + " " + basename + "\n"
-    text += ensureNewline(string(content))
+		text += plainTextHeading + " " + basename + "\n"
+		text += ensureNewline(string(content))
 
-  }
-  return text
+	}
+	return text
 }

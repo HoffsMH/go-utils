@@ -1,10 +1,10 @@
 package util
 
 import (
-  "path/filepath"
-  "regexp"
-  "path"
-  "os"
+	"os"
+	"path"
+	"path/filepath"
+	"regexp"
 )
 
 type FileContent struct {
@@ -18,11 +18,11 @@ func Hsplit(lines []string, dir string) {
 
 	r := regexp.MustCompile(heading + " (.*)")
 
-  for _, line := range lines {
+	for _, line := range lines {
 		match := r.FindStringSubmatch(line)
 
-    // if there is atleast one heading already and 
-    // its not a match
+		// if there is atleast one heading already and
+		// its not a match
 		if len(result) > 0 && len(match) == 0 {
 			result[0].Content += line + "\n"
 		}
@@ -32,10 +32,10 @@ func Hsplit(lines []string, dir string) {
 			// start a new header
 			result = append([]FileContent{newFileContent(match[1], dir)}, result...)
 		}
-  }
-  result = pruneEmptyFileContents(result)
+	}
+	result = pruneEmptyFileContents(result)
 
-  WriteSplits(result)
+	WriteSplits(result)
 }
 
 func pruneEmptyFileContents(fcs []FileContent) []FileContent {

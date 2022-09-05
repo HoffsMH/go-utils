@@ -2,7 +2,7 @@ package util
 
 import (
 	"bufio"
-  "os"
+	"os"
 )
 
 func GetTerms(args []string) []string {
