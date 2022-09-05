@@ -1,7 +1,6 @@
 package util
 
 import (
-	"fmt"
 	"os"
 	"path"
 	"path/filepath"
@@ -24,7 +23,7 @@ func ensureNewline(s string) string {
 	return s + "\n"
 }
 
-func Hcat(filenames []string) {
+func Hcat(filenames []string) string {
   var text string
   for _, filename := range filenames {
     abs, _ := filepath.Abs(filename)
@@ -35,5 +34,5 @@ func Hcat(filenames []string) {
     text += ensureNewline(string(content))
 
   }
-  fmt.Println(text)
+  return text
 }

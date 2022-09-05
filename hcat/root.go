@@ -12,7 +12,7 @@ var rootCmd = &cobra.Command{
 	Args: cobra.MinimumNArgs(0),
   Run: func(cmd *cobra.Command, args []string) {
 		terms := util.GetTerms(args)
-		util.Hcat(terms)
+		fmt.Println(util.Hcat(terms))
   },
 }
 
