@@ -10,10 +10,12 @@ import (
 	"time"
 )
 
+// current time in iso format
 func nowISODate() string {
 	return time.Now().Format(time.RFC3339)
 }
 
+// appends current iso time to any string
 func prependCurrentISODate(str string) string {
 	return nowISODate() + "-" + str
 }
@@ -55,6 +57,8 @@ func PrefixNames(filepaths []string) {
 	}
 }
 
+// if a given filename begins with a parsable date extract that date otherwise
+// error
 func parseDateFileName(fn string) (time.Time, error) {
 	if len(fn) < 10 {
 		return time.Now(), errors.New("not long enough to contain a date")

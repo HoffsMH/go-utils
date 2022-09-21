@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"git.mhkr.xyz/go-utils"
 	"github.com/spf13/cobra"
@@ -12,21 +11,6 @@ var rootCmd = &cobra.Command{
 	Use: "prefix",
 }
 
-func getTerms(args []string) []string {
-	terms := []string{}
-
-	if len(args) > 0 {
-		terms = args
-	} else {
-		scanner := bufio.NewScanner(os.Stdin)
-		for scanner.Scan() {
-			terms = append(terms, scanner.Text())
-		}
-	}
-
-	return terms
-}
-
 var fileCmd = &cobra.Command{
 	Use:   "file",
 	Short: "prefixes a file with the current iso date, if it does not already have one",
@@ -35,7 +19,7 @@ var fileCmd = &cobra.Command{
 	Aliases: []string{"f"},
 	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		terms := getTerms(args)
+		terms := util.GetTerms(args)
 		util.PrefixFiles(terms)
 	},
 }
@@ -47,7 +31,7 @@ var nameCmd = &cobra.Command{
 	Aliases: []string{"n"},
 	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		terms := getTerms(args)
+		terms := util.GetTerms(args)
 		util.PrefixNames(terms)
 	},
 }

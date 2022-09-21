@@ -13,6 +13,11 @@ type FileContent struct {
 	Dir     string
 }
 
+
+// given text that contains some lines that begin with ## (h2 heading in md)
+// split every heading into its own file in a given directory
+//
+// # cat $somefile | hsplit $somdir
 func Hsplit(lines []string, dir string) {
 	var result []FileContent
 

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"git.mhkr.xyz/go-utils"
 	"github.com/spf13/cobra"
@@ -18,7 +17,7 @@ var rootCmd = &cobra.Command{
 	Long: "outputs a file name to std out with a date prefix if it does not already have one",
 	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		terms := getTerms(args)
+		terms := util.GetTerms(args)
     tr := &util.TimeRange{
       Months: months,
       Weeks: weeks,
@@ -27,21 +26,6 @@ var rootCmd = &cobra.Command{
 
     printlist(util.TFilter(terms, tr, ignore))
   },
-}
-
-func getTerms(args []string) []string {
-	terms := []string{}
-
-	if len(args) > 0 {
-		terms = args
-	} else {
-		scanner := bufio.NewScanner(os.Stdin)
-		for scanner.Scan() {
-			terms = append(terms, scanner.Text())
-		}
-	}
-
-	return terms
 }
 
 func main() {
