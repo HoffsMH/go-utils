@@ -16,7 +16,7 @@ type TimeRange struct {
 // strings fall within the range of time from now
 func TFilter(filnames []string, tr *TimeRange, ignore bool) []string {
 	var results []string
-  // now sure why there is a one off error of 2 here... maybe timezones?
+	// now sure why there is a one off error of 2 here... maybe timezones?
 	timeHoriz := time.Now().AddDate(-tr.Months, -tr.Weeks, -tr.Days-2)
 	for _, filename := range filnames {
 		abs, _ := filepath.Abs(filename)

@@ -33,7 +33,7 @@ func ensureNewline(s string) string {
 //  ## file2.md
 //  ok"
 
-//  # ls $somedir | tfilter | sort -h | hcat > $somefile
+// # ls $somedir | tfilter | sort -h | hcat > $somefile
 func Hcat(filenames []string) string {
 	var text string
 	for _, filename := range filenames {

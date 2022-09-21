@@ -11,81 +11,96 @@ import (
 var linkTest *regexp.Regexp = regexp.MustCompile("(?m)(^http.*$)")
 
 func AppendTitleFile(filepaths []string) string {
-  content := Hcat(filepaths)
-  lines := strings.Split(content, "\n")
+	content := Hcat(filepaths)
+	lines := strings.Split(content, "\n")
 
-  return AppendTitle(lines)
+	return AppendTitle(lines)
 }
 
+// given a multiline string, append html title to previous lines that are http links
+// given:
+// foo
+// http://google.com
+// bar
+//
+// output:
+// foo
+// ( Google )
+// http://google.com
+// bar
 func AppendTitle(content []string) string {
-  newContent := []string{}
+	newContent := []string{}
 
-  for _, line := range content {
-    result := linkTest.FindStringSubmatch(line)
+	for _, line := range content {
+		result := linkTest.FindStringSubmatch(line)
 
-    if len(result) > 0 && !AlreadyTitled(newContent) {
-      c := colly.NewCollector()
+		if len(result) > 0 && !AlreadyTitled(newContent) {
+			c := colly.NewCollector()
 
-      // Find and visit all links
-      c.OnHTML("title", func(e *colly.HTMLElement) {
-        if AlreadyTitled(newContent) { return }
-        
-        newContent = append(newContent, FormatTitle(e.Text))
+			// Find and visit all links
+			c.OnHTML("title", func(e *colly.HTMLElement) {
+				if AlreadyTitled(newContent) {
+					return
+				}
 
-      })
+				newContent = append(newContent, FormatTitle(e.Text))
 
-      c.OnError(func(_ *colly.Response, err error) {
-        if AlreadyTitled(newContent) { return }
+			})
 
-        newContent = append(newContent, "( error )")
-      })
+			c.OnError(func(_ *colly.Response, err error) {
+				if AlreadyTitled(newContent) {
+					return
+				}
 
-      c.Visit(line)
-    }
+				newContent = append(newContent, "( error )")
+			})
 
-    newContent = append(newContent, line)
-  }
+			c.Visit(line)
+		}
 
-  return strings.Join(newContent, "\n")
+		newContent = append(newContent, line)
+	}
+
+	return strings.Join(newContent, "\n")
 }
 
 func AlreadyTitled(newLines []string) bool {
-  if len(newLines) == 0 { return false }
-  testTitle := regexp.MustCompile("^\\(.*\\)")
-  alreadyTitled := testTitle.FindStringSubmatch(newLines[len(newLines) - 1])
+	if len(newLines) == 0 {
+		return false
+	}
+	testTitle := regexp.MustCompile("^\\(.*\\)")
+	alreadyTitled := testTitle.FindStringSubmatch(newLines[len(newLines)-1])
 
-  return len(alreadyTitled) > 0
+	return len(alreadyTitled) > 0
 }
 
 func FormatTitle(text string) string {
-  text = strings.Replace(text, "\n", "", -1)
-  text = strings.Replace(text, "\t", "", -1)
+	text = strings.Replace(text, "\n", "", -1)
+	text = strings.Replace(text, "\t", "", -1)
 
-  if len(text) > 75 {
-    text = "( " + text[:74] + " )"
-  } else {
-    text = "( " + text + " )"
-  }
+	if len(text) > 75 {
+		text = "( " + text[:74] + " )"
+	} else {
+		text = "( " + text + " )"
+	}
 
-  return removeDuplicateWhitespace(text)
+	return removeDuplicateWhitespace(text)
 }
 
 func removeDuplicateWhitespace(inputString string) string {
-    newString := ""
+	newString := ""
 
-    for i, char := range inputString {
-      var prev byte
+	for i, char := range inputString {
+		var prev byte
 
-      if i != 0 {
-        prev = inputString[i-1]
-      }
-    
-      if byte(char) == prev && char == ' ' {
-        continue
-      }
-      newString = newString + string(char)
-    }
-    return newString
+		if i != 0 {
+			prev = inputString[i-1]
+		}
+
+		if byte(char) == prev && char == ' ' {
+			continue
+		}
+		newString = newString + string(char)
+	}
+	return newString
 }
-
-
