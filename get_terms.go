@@ -5,16 +5,15 @@ import (
 	"os"
 )
 
-func GetTerms(args []string) []string {
-	terms := []string{}
+// GetTerms ...
+func GetTerms(terms []string) []string {
+	if len(terms) > 0 {
+		return terms
+	}
 
-	if len(args) > 0 {
-		terms = args
-	} else {
-		scanner := bufio.NewScanner(os.Stdin)
-		for scanner.Scan() {
-			terms = append(terms, scanner.Text())
-		}
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		terms = append(terms, scanner.Text())
 	}
 
 	return terms
