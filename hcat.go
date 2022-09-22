@@ -1,10 +1,11 @@
 package util
 
 import (
+	"log"
 	"os"
 	"path"
 	"path/filepath"
-	"regexp"
+	"strings"
 )
 
 var plainTextHeading = "##"
@@ -16,11 +17,11 @@ func readFile(filename string) (string, error) {
 }
 
 func ensureNewline(s string) string {
-	match, _ := regexp.MatchString("\n$", s)
-	if match == true {
-		return s
+	if !strings.HasSuffix(s, "\n") {
+		s += "\n"
 	}
-	return s + "\n"
+
+	return s
 }
 
 // given a list of text files cats them together into a single stream of text
@@ -34,16 +35,25 @@ func ensureNewline(s string) string {
 //  ok"
 
 // # ls $somedir | tfilter | sort -h | hcat > $somefile
+
+// Hcat ...
 func Hcat(filenames []string) string {
 	var text string
 	for _, filename := range filenames {
-		abs, _ := filepath.Abs(filename)
+		abs, err := filepath.Abs(filename)
+		if err != nil {
+			log.Fatalf("failed to Hcat: %s", err)
+		}
+
 		basename := path.Base(abs)
-		content, _ := readFile(abs)
+		content, err := readFile(abs)
+		if err != nil {
+			log.Fatalf("failed to Hcat: %s", err)
+		}
 
-		text += plainTextHeading + " " + basename + "\n"
-		text += ensureNewline(string(content))
-
+		text += ensureNewline(plainTextHeading + " " + basename)
+		text += ensureNewline(content)
 	}
+
 	return text
 }
