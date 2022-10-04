@@ -9,12 +9,11 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use: "hsplit",
-	Args: cobra.MinimumNArgs(0),
+	Use: "jrnl.lock <dir>",
+	Args: cobra.MinimumNArgs(1),
   Run: func(cmd *cobra.Command, args []string) {
-    // filename
-    // dir
-    util.Hsplit(util.Stdin(), args[0])
+		terms := util.GetTerms(args)
+		fmt.Println(util.JrnlLock(terms[0]))
   },
 }
 

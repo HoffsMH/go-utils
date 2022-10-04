@@ -18,3 +18,13 @@ func GetTerms(terms []string) []string {
 
 	return terms
 }
+
+// Stdin ...
+func Stdin() []string {
+  var lines []string
+  scanner := bufio.NewScanner(os.Stdin)
+  for scanner.Scan() {
+    lines = append(lines, scanner.Text())
+  }
+  return lines
+}
