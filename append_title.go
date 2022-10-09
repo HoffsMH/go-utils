@@ -10,13 +10,6 @@ import (
 // (?m) turns on multiline mode
 var linkTest *regexp.Regexp = regexp.MustCompile("(?m)(^http.*$)")
 
-func AppendTitleFile(filepaths []string) string {
-	content := Hcat(filepaths)
-	lines := strings.Split(content, "\n")
-
-	return AppendTitle(lines)
-}
-
 // given a multiline string, append html title to previous lines that are http links
 // given:
 // foo
