@@ -42,11 +42,22 @@ func filterTime(filnames []string, tr *TimeRange, count int, ignore bool) []stri
 }
 
 func filterCount(filenames []string, tr *TimeRange, count int, ignore bool) []string {
+  var results []string
 
-  if count > len(filenames) {
-    count = len(filenames)
+	for _, filename := range filenames {
+		abs, _ := filepath.Abs(filename)
+		_, err := parseDateFileName(filename)
+
+		if ignore && err != nil {
+			continue
+		}
+    results = append(results, abs)
+  }
+
+  if count > len(results) {
+    count = len(results)
   }
 
   // I want the last x of the array
-  return filenames[len(filenames) - count:];
+  return results[len(results) - count:];
 }
