@@ -16,7 +16,7 @@ type TimeRange struct {
 // filters those strings based on whether or not the date parsed from those
 // strings fall within the range of time from now
 func TFilter(filenames []string, tr *TimeRange, count int, ignore bool) []string {
-  return filter(filenames, tr, count, ignore)
+	return filter(filenames, tr, count, ignore)
 }
 
 // filter
@@ -31,16 +31,16 @@ func TFilter(filenames []string, tr *TimeRange, count int, ignore bool) []string
 func filter(filenames []string, tr *TimeRange, count int, ignore bool) []string {
 	var results []string
 	// not sure why there is a one off error of 2 here... maybe timezones?
-  days := -tr.Days-2 + -tr.Weeks*7
+	days := -tr.Days - 2 + -tr.Weeks*7
 	timeHoriz := time.Now().AddDate(0, -tr.Months, days)
-  isTimeActive := tr.Days + tr.Weeks + tr.Months > 1
-  isCountActive := count > 0
+	isTimeActive := tr.Days+tr.Weeks+tr.Months > 1
+	isCountActive := count > 0
 
-  // count is whatever is specified or, if no time range is specified 20
-  if !isCountActive && !isTimeActive {
-    count = 20
-    isCountActive = true
-  }
+	// count is whatever is specified or, if no time range is specified 20
+	if !isCountActive && !isTimeActive {
+		count = 20
+		isCountActive = true
+	}
 
 	sort.Sort(sort.Reverse(sort.StringSlice(filenames)))
 
@@ -52,20 +52,19 @@ func filter(filenames []string, tr *TimeRange, count int, ignore bool) []string 
 			continue
 		}
 
-    // dont include if time range is passed
-    if isTimeActive && !t.After(timeHoriz) {
-      continue
-    }
+		// dont include if time range is passed
+		if isTimeActive && !t.After(timeHoriz) {
+			continue
+		}
 
-    // dont include if there is no count left
-    if isCountActive && count <= 0 {
-      continue
-    }
+		// dont include if there is no count left
+		if isCountActive && count <= 0 {
+			continue
+		}
 
-    results = append(results, abs)
-    count -= 1
+		results = append(results, abs)
+		count -= 1
 	}
 
-  return results
+	return results
 }
-

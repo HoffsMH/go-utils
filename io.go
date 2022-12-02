@@ -21,10 +21,10 @@ func GetTerms(terms []string) []string {
 
 // Stdin ...
 func Stdin() []string {
-  var lines []string
-  scanner := bufio.NewScanner(os.Stdin)
-  for scanner.Scan() {
-    lines = append(lines, scanner.Text())
-  }
-  return lines
+	var lines []string
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	return lines
 }
