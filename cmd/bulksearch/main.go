@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/hoffsmh/bulksearch"
+	util "git.mhkr.xyz/go-utils"
 	"github.com/spf13/cobra"
 )
 
@@ -15,7 +15,7 @@ var months int
 var dir string
 
 var rootCmd = &cobra.Command{
-	Use: "bulksearch",
+	Use: "<search terms separated by new lines> | bulksearch <directories>",
 	Run: func(cmd *cobra.Command, args []string) {
 		scanner := bufio.NewScanner(os.Stdin)
 
@@ -23,7 +23,7 @@ var rootCmd = &cobra.Command{
 		for scanner.Scan() {
 			terms = append(terms, scanner.Text())
 		}
-		results := bulksearch.Search(terms, args)
+		results := util.Search(terms, args)
 		for _,v := range results {
 			fmt.Println(v.Term, ",", v.FileCount)
 		}
@@ -37,5 +37,3 @@ func main() {
 	}
 }
 
-func init() {
-}
