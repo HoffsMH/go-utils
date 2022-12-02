@@ -5,6 +5,7 @@
 - rm program that encrypts and provides native restoration
 - rm program that automatically prunes oldest data first and also a limit on the total size of the trash bin
 - time series data aggregation on system resources, so I can see what is eating up all my cpu, hopefully can hook it up to grafan
+- e.cap just search for a string
 
 ## Doing
 
