@@ -15,17 +15,32 @@ type TimeRange struct {
 // filters those strings based on whether or not the date parsed from those
 // strings fall within the range of time from now
 func TFilter(filnames []string, tr *TimeRange, count int, ignore bool) []string {
-  if count > 0 {
-    return filterCount(filnames, tr, count, ignore)
-  }
-  return filterTime(filnames, tr, count, ignore)
+  return filter(filnames, tr, count, ignore)
 }
 
-func filterTime(filnames []string, tr *TimeRange, count int, ignore bool) []string {
+// filter
+// if neither a count or time is specified then its the first 20
+//
+// If a time is specified and a count is specified, it returns up to count
+// within the timerange
+//
+// if Just a time is specified then its all within that timerange
+//
+// if Just a count is specified then its all up to that count
+func filter(filnames []string, tr *TimeRange, count int, ignore bool) []string {
 	var results []string
-	// now sure why there is a one off error of 2 here... maybe timezones?
+	// not sure why there is a one off error of 2 here... maybe timezones?
   days := -tr.Days-2 + -tr.Weeks*7
 	timeHoriz := time.Now().AddDate(0, -tr.Months, days)
+  isTimeActive := tr.Days + tr.Weeks + tr.Months > 1
+  isCountActive := count > 0
+
+  // count is whatever is specified or, if no time range is specified 20
+  if !isCountActive && !isTimeActive {
+    count = 20
+    isCountActive = true
+  }
+
 	for _, filename := range filnames {
 		abs, _ := filepath.Abs(filename)
 		t, err := parseDateFileName(filename)
@@ -34,30 +49,20 @@ func filterTime(filnames []string, tr *TimeRange, count int, ignore bool) []stri
 			continue
 		}
 
-		if t.After(timeHoriz) {
-			results = append(results, abs)
-		}
-	}
-	return results;
-}
+    // dont include if time range is passed
+    if isTimeActive && !t.After(timeHoriz) {
+      continue
+    }
 
-func filterCount(filenames []string, tr *TimeRange, count int, ignore bool) []string {
-  var results []string
+    // dont include if there is no count left
+    if isCountActive && count <= 0 {
+      continue
+    }
 
-	for _, filename := range filenames {
-		abs, _ := filepath.Abs(filename)
-		_, err := parseDateFileName(filename)
-
-		if ignore && err != nil {
-			continue
-		}
     results = append(results, abs)
-  }
+    count -= 1
+	}
 
-  if count > len(results) {
-    count = len(results)
-  }
-
-  // I want the last x of the array
-  return results[len(results) - count:];
+  return results
 }
+
