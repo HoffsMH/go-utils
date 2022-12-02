@@ -2,6 +2,7 @@ package util
 
 import (
 	"path/filepath"
+	"sort"
 	"time"
 )
 
@@ -14,8 +15,8 @@ type TimeRange struct {
 // Given some strings and a range of time from now
 // filters those strings based on whether or not the date parsed from those
 // strings fall within the range of time from now
-func TFilter(filnames []string, tr *TimeRange, count int, ignore bool) []string {
-  return filter(filnames, tr, count, ignore)
+func TFilter(filenames []string, tr *TimeRange, count int, ignore bool) []string {
+  return filter(filenames, tr, count, ignore)
 }
 
 // filter
@@ -27,7 +28,7 @@ func TFilter(filnames []string, tr *TimeRange, count int, ignore bool) []string 
 // if Just a time is specified then its all within that timerange
 //
 // if Just a count is specified then its all up to that count
-func filter(filnames []string, tr *TimeRange, count int, ignore bool) []string {
+func filter(filenames []string, tr *TimeRange, count int, ignore bool) []string {
 	var results []string
 	// not sure why there is a one off error of 2 here... maybe timezones?
   days := -tr.Days-2 + -tr.Weeks*7
@@ -41,7 +42,9 @@ func filter(filnames []string, tr *TimeRange, count int, ignore bool) []string {
     isCountActive = true
   }
 
-	for _, filename := range filnames {
+	sort.Sort(sort.Reverse(sort.StringSlice(filenames)))
+
+	for _, filename := range filenames {
 		abs, _ := filepath.Abs(filename)
 		t, err := parseDateFileName(filename)
 
