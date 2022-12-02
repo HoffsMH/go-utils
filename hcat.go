@@ -2,7 +2,6 @@ package util
 
 import (
 	"log"
-	"os"
 	"path"
 	"path/filepath"
 	"strings"
@@ -10,11 +9,6 @@ import (
 
 var plainTextHeading = "##"
 var heading = "^" + plainTextHeading
-
-func readFile(filename string) (string, error) {
-	bytes, err := os.ReadFile(filename)
-	return string(bytes), err
-}
 
 func ensureNewline(s string) string {
 	if !strings.HasSuffix(s, "\n") {
