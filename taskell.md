@@ -12,6 +12,7 @@
 - go testify
 - look for places where it would be good to log.Fatal
 - delve debugger
+- wrap brought in and usable in vim
 
 ## Doing
 
