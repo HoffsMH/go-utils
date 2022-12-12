@@ -1,18 +1,42 @@
 package util
 
-import "regexp"
+import (
+	"regexp"
+)
 
-func DeDup(lines []string, pattern string) []string {
-  x := regexp.MustCompile(pattern)
+func DeDup(lines []string, before string, pattern string) []string {
+  patternMatch := regexp.MustCompile(pattern)
+  result := []string{}
+  seen := make(map[string]int)
 
   // go through each line
-  // for _, line := range lines {
+  for i, line := range lines {
+    match := patternMatch.FindStringSubmatch(line)
     // if there is a pattern input and if that pattern input matches this line
-    // if x.match(line) {}
-  // }
-      // if there is an entry in the map for this line refrain from adding to the result
-      // otherwise add this line to the map
+		if len(match) != 0 {
+      seen[line] += 1
+		}
+
+    // if we have seen this line before
+    if seen[line] > 1 {
+      // trim prior line if specified
+      result = trimBeforeLine(lines[i-1], result, before)
+      continue
+    }
+		result = append(result, line)
+  }
 
   // return the result
-  return []string{"hi"}
+  return result
+}
+
+func trimBeforeLine(priorLine string, pendingResult []string, before string) []string {
+  if before == "" { return pendingResult }
+  beforeMatch := regexp.MustCompile(before)
+
+  match := beforeMatch.FindStringSubmatch(priorLine)
+  if len(match) != 0 {
+    pendingResult = pendingResult[:len(pendingResult) - 1]
+  }
+  return pendingResult;
 }
