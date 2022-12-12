@@ -36,12 +36,13 @@ func filter(filenames []string, tr *TimeRange, count int, ignore bool) []string 
 	isTimeActive := tr.Days+tr.Weeks+tr.Months > 1
 	isCountActive := count > 0
 
-	// count is whatever is specified or, if no time range is specified 20
+	// count is whatever is specified or, if no time range is specified, 20
 	if !isCountActive && !isTimeActive {
 		count = 20
 		isCountActive = true
 	}
 
+  // Start from most recent time
 	sort.Sort(sort.Reverse(sort.StringSlice(filenames)))
 
 	for _, filename := range filenames {
@@ -66,5 +67,7 @@ func filter(filenames []string, tr *TimeRange, count int, ignore bool) []string 
 		count -= 1
 	}
 
+  // return in original Chronological order
+	sort.Sort(sort.StringSlice(results))
 	return results
 }
