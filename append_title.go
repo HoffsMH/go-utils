@@ -37,7 +37,6 @@ func AppendTitle(content []string) string {
 				}
 
 				newContent = append(newContent, FormatTitle(e.Text))
-
 			})
 
 			c.OnError(func(_ *colly.Response, err error) {
@@ -71,6 +70,7 @@ func FormatTitle(text string) string {
 	text = strings.Replace(text, "\n", "", -1)
 	text = strings.Replace(text, "\t", "", -1)
 
+  // Some HTML titles can be arbitrarily long
 	if len(text) > 75 {
 		text = "( " + text[:74] + " )"
 	} else {
