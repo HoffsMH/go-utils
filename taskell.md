@@ -13,10 +13,12 @@
 - look for places where it would be good to log.Fatal
 - delve debugger
 - wrap brought in and usable in vim
+- takes js object and goes to json
+- prevent duplicate being added
+- moves files from location to location based on file trait such as size
 
 ## Doing
 
-- bug running e.cap not filtering on time or something
 
 ## Done
 
@@ -25,3 +27,4 @@
 - go through list of files and all single line links become two lines with the html title as the line after it
 - bulksearch migrated in
 - e.cap just search for a string
+- bug running e.cap not filtering on time or something
