@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"git.mhkr.xyz/go-utils"
-	"github.com/spf13/cobra"
 	"os"
+
+	util "git.mhkr.xyz/go-utils"
+	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
@@ -20,7 +21,7 @@ var fileCmd = &cobra.Command{
 	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		terms := util.GetTerms(args)
-		util.PrefixFiles(terms)
+		util.PrinList(util.PrefixFiles(terms))
 	},
 }
 
@@ -32,7 +33,7 @@ var nameCmd = &cobra.Command{
 	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		terms := util.GetTerms(args)
-		util.PrefixNames(terms)
+		util.PrinList(util.PrefixNames(terms))
 	},
 }
 
