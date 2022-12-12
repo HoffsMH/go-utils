@@ -2,12 +2,12 @@ package util
 
 import (
 	"errors"
-	"fmt"
-	"github.com/araddon/dateparse"
 	"os"
 	"path"
 	"path/filepath"
 	"time"
+
+	"github.com/araddon/dateparse"
 )
 
 // current time in iso format
@@ -21,7 +21,8 @@ func prependCurrentISODate(str string) string {
 }
 
 // given a file -- prefix it by moving it
-func PrefixFiles(filepaths []string) {
+func PrefixFiles(filepaths []string) []string {
+  results := []string{}
 	for _, name := range filepaths {
 		oldabs, _ := filepath.Abs(name)
 		oldbasename := path.Base(oldabs)
@@ -32,14 +33,16 @@ func PrefixFiles(filepaths []string) {
 		if err != nil {
 			newbasename := prependCurrentISODate(oldbasename)
 			newabs := filepath.Join(dir, newbasename)
-			fmt.Println(newabs)
+      results = append(results, newabs)
 			os.Rename(oldabs, newabs)
 		}
 	}
+  return results
 }
 
 // given a string -- outputs a filepath prefixed with current date
-func PrefixNames(filepaths []string) {
+func PrefixNames(filepaths []string) []string {
+  results := []string{}
 	for _, name := range filepaths {
 		oldabs, _ := filepath.Abs(name)
 		oldbasename := path.Base(oldabs)
@@ -50,11 +53,12 @@ func PrefixNames(filepaths []string) {
 		if err != nil {
 			newbasename := prependCurrentISODate(oldbasename)
 			newabs := filepath.Join(dir, newbasename)
-			fmt.Println(newabs)
+      results = append(results, newabs)
 		} else {
-			fmt.Println(filepath.Join(dir, oldbasename))
+      results = append(results, filepath.Join(dir, oldbasename))
 		}
 	}
+  return results
 }
 
 // if a given filename begins with a parsable date extract that date otherwise
