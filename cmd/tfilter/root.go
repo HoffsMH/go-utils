@@ -27,7 +27,7 @@ var rootCmd = &cobra.Command{
       Days: days,
     }
 
-    printlist(util.TFilter(terms, tr, count, ignore))
+    util.PrinList(util.TFilter(terms, tr, count, ignore))
   },
 }
 
@@ -36,12 +36,6 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-}
-
-func printlist(list []string) {
-  for _, str := range list {
-    fmt.Println(str)
-  }
 }
 
 func init() {

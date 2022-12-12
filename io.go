@@ -2,6 +2,7 @@ package util
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 )
 
@@ -17,6 +18,12 @@ func GetTerms(terms []string) []string {
 	}
 
 	return terms
+}
+
+func PrinList(list []string) {
+  for _, str := range list {
+    fmt.Println(str)
+  }
 }
 
 // Stdin ...
