@@ -36,3 +36,8 @@ func Stdin() []string {
 	}
 	return lines
 }
+
+func readFile(filename string) (string, error) {
+	bytes, err := os.ReadFile(filename)
+	return string(bytes), err
+}

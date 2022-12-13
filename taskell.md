@@ -14,11 +14,9 @@
 - wrap brought in and usable in vim
 - takes js object and goes to json
 - moves files from location to location based on file trait such as size
-- isabsolute to accomodate paths that begin with ~
 
 ## Doing
 
-- prevent duplicate being added
 
 ## Done
 
@@ -28,3 +26,4 @@
 - bulksearch migrated in
 - e.cap just search for a string
 - bug running e.cap not filtering on time or something
+- prevent duplicate being added
