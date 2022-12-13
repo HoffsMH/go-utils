@@ -37,6 +37,6 @@ func Search(searchTerms []string, dirs []string) []Result {
 func SearchFor(term string, dir string) int {
 	modTerm := strings.Replace(term, "-", "\\-", -1)
 
-	out, _ := exec.Command("rg", "-Ic", modTerm, dir).Output()
+	out, _ := exec.Command("rg", "-IcF", modTerm, dir).Output()
 	return len(strings.Split(string(out), "\n")) - 1
 }
