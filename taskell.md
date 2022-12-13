@@ -1,6 +1,5 @@
 ## To Do
 
-- isabsolute to accomodate paths that begin with ~
 - alternate file to be split in so that its easy to add new notes from phone
 - rm program that encrypts and provides native restoration
 - rm program that automatically prunes oldest data first and also a limit on the total size of the trash bin
@@ -14,11 +13,12 @@
 - delve debugger
 - wrap brought in and usable in vim
 - takes js object and goes to json
-- prevent duplicate being added
 - moves files from location to location based on file trait such as size
+- isabsolute to accomodate paths that begin with ~
 
 ## Doing
 
+- prevent duplicate being added
 
 ## Done
 
