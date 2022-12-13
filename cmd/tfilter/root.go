@@ -27,7 +27,7 @@ var rootCmd = &cobra.Command{
       Days: days,
     }
 
-    util.PrinList(util.TFilter(terms, tr, count, ignore))
+    util.PrintList(util.TFilter(terms, tr, count, ignore))
   },
 }
 

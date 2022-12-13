@@ -20,10 +20,11 @@ func GetTerms(terms []string) []string {
 	return terms
 }
 
-func PrinList(list []string) {
-  for _, str := range list {
-    fmt.Println(str)
-  }
+// PrintList ...
+func PrintList(list []string) {
+	for _, str := range list {
+		fmt.Println(str)
+	}
 }
 
 // Stdin ...

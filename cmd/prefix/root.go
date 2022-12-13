@@ -21,7 +21,7 @@ var fileCmd = &cobra.Command{
 	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		terms := util.GetTerms(args)
-		util.PrinList(util.PrefixFiles(terms))
+		util.PrintList(util.PrefixFiles(terms))
 	},
 }
 
@@ -33,7 +33,7 @@ var nameCmd = &cobra.Command{
 	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		terms := util.GetTerms(args)
-		util.PrinList(util.PrefixNames(terms))
+		util.PrintList(util.PrefixNames(terms))
 	},
 }
 

@@ -42,7 +42,7 @@ func filter(filenames []string, tr *TimeRange, count int, ignore bool) []string 
 		isCountActive = true
 	}
 
-  // Start from most recent time
+	// Start from most recent time
 	sort.Sort(sort.Reverse(sort.StringSlice(filenames)))
 
 	for _, filename := range filenames {
@@ -67,7 +67,7 @@ func filter(filenames []string, tr *TimeRange, count int, ignore bool) []string 
 		count -= 1
 	}
 
-  // return in original Chronological order
+	// return in original Chronological order
 	sort.Sort(sort.StringSlice(results))
 	return results
 }

@@ -22,7 +22,7 @@ func prependCurrentISODate(str string) string {
 
 // given a file -- prefix it by moving it
 func PrefixFiles(filepaths []string) []string {
-  results := []string{}
+	results := []string{}
 	for _, name := range filepaths {
 		oldabs, _ := filepath.Abs(name)
 		oldbasename := path.Base(oldabs)
@@ -33,16 +33,16 @@ func PrefixFiles(filepaths []string) []string {
 		if err != nil {
 			newbasename := prependCurrentISODate(oldbasename)
 			newabs := filepath.Join(dir, newbasename)
-      results = append(results, newabs)
+			results = append(results, newabs)
 			os.Rename(oldabs, newabs)
 		}
 	}
-  return results
+	return results
 }
 
 // given a string -- outputs a filepath prefixed with current date
 func PrefixNames(filepaths []string) []string {
-  results := []string{}
+	results := []string{}
 	for _, name := range filepaths {
 		oldabs, _ := filepath.Abs(name)
 		oldbasename := path.Base(oldabs)
@@ -53,12 +53,12 @@ func PrefixNames(filepaths []string) []string {
 		if err != nil {
 			newbasename := prependCurrentISODate(oldbasename)
 			newabs := filepath.Join(dir, newbasename)
-      results = append(results, newabs)
+			results = append(results, newabs)
 		} else {
-      results = append(results, filepath.Join(dir, oldbasename))
+			results = append(results, filepath.Join(dir, oldbasename))
 		}
 	}
-  return results
+	return results
 }
 
 // if a given filename begins with a parsable date extract that date otherwise
