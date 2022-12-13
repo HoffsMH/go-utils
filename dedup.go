@@ -26,7 +26,6 @@ func DeDup(lines []string, before string, pattern string) []string {
 		result = append(result, line)
 	}
 
-	// return the result
 	return result
 }
 
