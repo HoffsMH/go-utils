@@ -1,4 +1,4 @@
-package main
+package util
 
 import (
   "fmt"
@@ -11,7 +11,7 @@ var kb int64 = 1000
 var mb int64 = 1000 * kb
 var limit int64 = 500 * mb
 
-func main() {
+func HeyLook() {
   var dirs []fs.FileInfo
 
   if len(os.Args) > 0 {
