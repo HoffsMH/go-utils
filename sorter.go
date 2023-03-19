@@ -1,10 +1,10 @@
 package util
 
 import (
-  "fmt"
-  "io/ioutil"
-  "os"
-  "io/fs"
+	"fmt"
+	"io/fs"
+	"io/ioutil"
+	"os"
 )
 
 var kb int64 = 1000
