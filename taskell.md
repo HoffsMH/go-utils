@@ -14,6 +14,9 @@
 - wrap brought in and usable in vim
 - takes js object and goes to json
 - moves files from location to location based on file trait such as size
+- openai file convesation format file -> binary +options, and then json -> binary -> file
+    > Also has a loading status to let you know its working.
+- nvim plugin that  can run openai utils in bg and then refresh current buffer/file
 
 ## Doing
 
