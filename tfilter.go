@@ -29,7 +29,7 @@ func TFilter(filenames []string, tr *TimeRange, ignore bool, isReject bool) []st
 func reject(filenames []string, tr *TimeRange, ignore bool) []string {
 	var results []string
 	timeHoriz := genTimeHoriz(tr)
-	isTimeActive := tr.Days+tr.Weeks+tr.Months > 1
+	isTimeActive := tr.Days+tr.Weeks+tr.Months >= 1
 
 	// Start from most recent time
 	sort.Sort(sort.Reverse(sort.StringSlice(filenames)))
@@ -71,7 +71,7 @@ func genTimeHoriz(tr *TimeRange) time.Time {
 func filter(filenames []string, tr *TimeRange, ignore bool) []string {
   var results []string
   timeHoriz := genTimeHoriz(tr)
-  isTimeActive := tr.Days+tr.Weeks+tr.Months > 1
+  isTimeActive := tr.Days+tr.Weeks+tr.Months >= 1
 
 	// Start from most recent time
 	// sort.Sort(sort.Reverse(sort.StringSlice(filenames)))
