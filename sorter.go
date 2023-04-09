@@ -12,19 +12,19 @@ var mb int64 = 1000 * kb
 var limit int64 = 500 * mb
 
 func HeyLook() {
-  var dirs []fs.FileInfo
+	var dirs []fs.FileInfo
 
-  if len(os.Args) > 0 {
-    dirs, _ = ioutil.ReadDir(os.Args[1])
-  } else {
-    dirs, _ = ioutil.ReadDir(".")
-  }
+	if len(os.Args) > 0 {
+		dirs, _ = ioutil.ReadDir(os.Args[1])
+	} else {
+		dirs, _ = ioutil.ReadDir(".")
+	}
 
 	for _, file := range dirs {
-    if file.Size() > limit {
-      fmt.Println("big boi")
-      fmt.Println(file.Size())
-      fmt.Println(file.Name())
-    }
+		if file.Size() > limit {
+			fmt.Println("big boi")
+			fmt.Println(file.Size())
+			fmt.Println(file.Name())
+		}
 	}
 }

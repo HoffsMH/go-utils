@@ -8,11 +8,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var count int
 var days int
 var weeks int
 var months int
 var ignore bool
+var reject bool
 
 var rootCmd = &cobra.Command{
 	Use: "tfilter",
@@ -27,7 +27,7 @@ var rootCmd = &cobra.Command{
       Days: days,
     }
 
-    util.PrintList(util.TFilter(terms, tr, count, ignore))
+    util.PrintList(util.TFilter(terms, tr, ignore, reject))
   },
 }
 
@@ -38,12 +38,13 @@ func main() {
 	}
 }
 
+
 func init() {
-  rootCmd.Flags().IntVarP(&count, "count", "c", 0, "alternatively provide a count of files")
-  rootCmd.Flags().IntVarP(&days, "days", "d", 0, "the amount of days to look back.")
+  rootCmd.Flags().IntVarP(&days, "days", "d", 2, "the amount of days to look back.")
   rootCmd.Flags().IntVarP(&weeks, "weeks", "w", 0, "the amount of weeks to look back.")
   rootCmd.Flags().IntVarP(&months, "months", "m", 0, "the amount of months to look back.")
-  rootCmd.Flags().BoolVarP(&ignore, "ignore", "i", true, "ignore filenames with errors")
+  rootCmd.Flags().BoolVarP(&ignore, "ignore", "i", true, "Ignore filenames with errors")
+  rootCmd.Flags().BoolVarP(&reject, "reject", "r", false, "alternatively reject any files that meet the criteria")
 }
 
 
