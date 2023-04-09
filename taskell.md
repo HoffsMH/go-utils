@@ -20,7 +20,6 @@
 
 ## Doing
 
-- reject based on time so that backup scripts know what to delete, other applications as well, for keeping timed files on a rolling basis
 
 ## Done
 
@@ -31,3 +30,4 @@
 - e.cap just search for a string
 - bug running e.cap not filtering on time or something
 - prevent duplicate being added
+- reject based on time so that backup scripts know what to delete, other applications as well, for keeping timed files on a rolling basis
