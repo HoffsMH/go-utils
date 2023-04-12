@@ -48,7 +48,7 @@ func tar(matches []string) {
 	}
 	log.Println("finished tar...")
 
-	xargs = []string{"-u"}
+	xargs = []string{"-u", "-n 1"}
 	xargs = append(xargs, matches...)
 	log.Println("shreding md files ...")
 	_, err = exec.Command("shred", xargs...).Output()
