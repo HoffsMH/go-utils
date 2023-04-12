@@ -3,16 +3,14 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	util "git.mhkr.xyz/go-utils"
 	"github.com/spf13/cobra"
 )
 
-var days int
-var weeks int
-var months int
-var ignore bool
-var reject bool
+var lessThan int
+var greaterThan int
 
 var rootCmd = &cobra.Command{
 	Use: "sfilter",
@@ -21,8 +19,18 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		terms := util.GetTerms(args)
 
-    util.PrintList(util.SFilter(terms, tr, ignore, reject))
+    var kb int64 = 1000
+    var mb int64 = 1000 * kb
+    var limit int64 = 500 * mb
+
+    util.PrintList(util.SFilter(limit))
   },
+}
+
+func convert(sizeStr string) {
+  if (strings.HasSuffix(sizeStr, "G") ) {
+
+  }
 }
 
 func main() {
