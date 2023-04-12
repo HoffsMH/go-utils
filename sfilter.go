@@ -6,9 +6,6 @@ import (
 	"os"
 )
 
-var kb int64 = 1000
-var mb int64 = 1000 * kb
-var limit int64 = 500 * mb
 
 func SFilter(limit int64) []string {
 	var dirs []fs.FileInfo
