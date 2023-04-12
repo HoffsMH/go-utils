@@ -1,7 +1,6 @@
 package util
 
 import (
-	"fmt"
 	"io/fs"
 	"io/ioutil"
 	"os"
@@ -11,8 +10,9 @@ var kb int64 = 1000
 var mb int64 = 1000 * kb
 var limit int64 = 500 * mb
 
-func HeyLook() {
+func SFilter(limit int64) []string {
 	var dirs []fs.FileInfo
+  var results = []string{}
 
 	if len(os.Args) > 0 {
 		dirs, _ = ioutil.ReadDir(os.Args[1])
@@ -22,9 +22,8 @@ func HeyLook() {
 
 	for _, file := range dirs {
 		if file.Size() > limit {
-			fmt.Println("big boi")
-			fmt.Println(file.Size())
-			fmt.Println(file.Name())
+      results = append(results, file.Name())
 		}
 	}
+  return results
 }
