@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"git.mhkr.xyz/go-utils"
-	"github.com/spf13/cobra"
 	"os"
+
+	util "git.mhkr.xyz/go-utils"
+	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
-	Use: "hcat",
+	Use: "jrnl.unlock",
 	Args: cobra.MinimumNArgs(1),
   Run: func(cmd *cobra.Command, args []string) {
 		terms := util.GetTerms(args)
