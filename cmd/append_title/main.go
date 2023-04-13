@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"git.mhkr.xyz/go-utils"
-	"github.com/spf13/cobra"
 	"os"
+
+	util "git.mhkr.xyz/go-utils"
+	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
@@ -13,8 +14,9 @@ var rootCmd = &cobra.Command{
 	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		terms := util.GetTerms(args)
+    c := &util.RealCollector{}
 
-    fmt.Println(util.AppendTitle(terms))
+    fmt.Println(util.AppendTitle(c, terms))
   },
 }
 
