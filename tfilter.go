@@ -17,14 +17,12 @@ type TimeRange struct {
 // strings fall within the range of time from now
 func TFilter(filenames []string, tr *TimeRange, ignore bool, isReject bool) []string {
 
-  if isReject  {
-    return reject(filenames, tr, ignore)
-  }
+	if isReject {
+		return reject(filenames, tr, ignore)
+	}
 
 	return filter(filenames, tr, ignore)
 }
-
-
 
 func reject(filenames []string, tr *TimeRange, ignore bool) []string {
 	var results []string
@@ -48,20 +46,19 @@ func reject(filenames []string, tr *TimeRange, ignore bool) []string {
 		}
 
 		results = append(results, abs)
-  }
+	}
 
 	// return in original Chronological order
 	sort.Sort(sort.StringSlice(results))
-  return results
+	return results
 }
 
-
 func genTimeHoriz(tr *TimeRange) time.Time {
-  return time.Now().AddDate(
-    0,
-    -tr.Months,
-    -tr.Days+ -tr.Weeks*7,
-    )
+	return time.Now().AddDate(
+		0,
+		-tr.Months,
+		-tr.Days+-tr.Weeks*7,
+	)
 }
 
 // filter
@@ -69,9 +66,9 @@ func genTimeHoriz(tr *TimeRange) time.Time {
 //
 // if Just a count is specified then its all up to that count
 func filter(filenames []string, tr *TimeRange, ignore bool) []string {
-  var results []string
-  timeHoriz := genTimeHoriz(tr)
-  isTimeActive := tr.Days+tr.Weeks+tr.Months >= 1
+	var results []string
+	timeHoriz := genTimeHoriz(tr)
+	isTimeActive := tr.Days+tr.Weeks+tr.Months >= 1
 
 	// Start from most recent time
 	// sort.Sort(sort.Reverse(sort.StringSlice(filenames)))
@@ -96,4 +93,3 @@ func filter(filenames []string, tr *TimeRange, ignore bool) []string {
 	sort.Sort(sort.StringSlice(results))
 	return results
 }
-
