@@ -6,10 +6,9 @@ import (
 	"os"
 )
 
-
-func SFilter(limit int64) []string {
+func SFilter(fileNames, lowerLimit int64, upperLimit int64) []string {
 	var dirs []fs.FileInfo
-  var results = []string{}
+	var results = []string{}
 
 	if len(os.Args) > 0 {
 		dirs, _ = ioutil.ReadDir(os.Args[1])
@@ -18,9 +17,9 @@ func SFilter(limit int64) []string {
 	}
 
 	for _, file := range dirs {
-		if file.Size() > limit {
-      results = append(results, file.Name())
+		if file.Size() > lowerLimit || file.Size() < upperLimit {
+			results = append(results, file.Name())
 		}
 	}
-  return results
+	return results
 }
