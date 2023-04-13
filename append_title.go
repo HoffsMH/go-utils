@@ -21,26 +21,27 @@ var linkTest *regexp.Regexp = regexp.MustCompile("(?m)(^http.*$)")
 // ( Google )
 // http://google.com
 // bar
-func AppendTitle(content []string) string {
+func AppendTitle(c Collector, content []string) string {
 	newContent := []string{}
 
 	for _, line := range content {
 		result := linkTest.FindStringSubmatch(line)
 
-		if len(result) > 0 && !AlreadyTitled(newContent) {
-			c := colly.NewCollector()
+		if len(result) > 0 && !isAlreadyTitled(newContent) {
 
 			// Find and visit all links
 			c.OnHTML("title", func(e *colly.HTMLElement) {
-				if AlreadyTitled(newContent) {
+
+				if isAlreadyTitled(newContent) {
 					return
 				}
+
 
 				newContent = append(newContent, FormatTitle(e.Text))
 			})
 
 			c.OnError(func(_ *colly.Response, err error) {
-				if AlreadyTitled(newContent) {
+				if isAlreadyTitled(newContent) {
 					return
 				}
 
@@ -56,7 +57,7 @@ func AppendTitle(content []string) string {
 	return strings.Join(newContent, "\n")
 }
 
-func AlreadyTitled(newLines []string) bool {
+func isAlreadyTitled(newLines []string) bool {
 	if len(newLines) == 0 {
 		return false
 	}
@@ -67,17 +68,22 @@ func AlreadyTitled(newLines []string) bool {
 }
 
 func FormatTitle(text string) string {
-	text = strings.Replace(text, "\n", "", -1)
-	text = strings.Replace(text, "\t", "", -1)
-
-	// Some HTML titles can be arbitrarily long
-	if len(text) > 75 {
-		text = "( " + text[:74] + " )"
-	} else {
-		text = "( " + text + " )"
-	}
-
+	text = removeNewlinesAndTabs(text)
+	text = truncateString(text, 75)
+	text = "( " + text + " )"
 	return removeDuplicateWhitespace(text)
+}
+
+func removeNewlinesAndTabs(text string) string {
+	text = strings.Replace(text, "\n", "", -1)
+	return strings.Replace(text, "\t", "", -1)
+}
+
+func truncateString(str string, length int) string {
+	if len(str) > length {
+		return str[:length-1]
+	}
+	return str
 }
 
 func removeDuplicateWhitespace(inputString string) string {
