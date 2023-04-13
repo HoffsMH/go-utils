@@ -28,7 +28,7 @@ func ensureNewline(s string) string {
 //  ## file2.md
 //  ok"
 
-// # ls $somedir | tfilter | sort -h | hcat > $somefile
+// # ls $somedir | tfilter | sort | hcat > $somefile
 
 // Hcat ...
 func Hcat(filenames []string) string {
