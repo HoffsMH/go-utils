@@ -17,9 +17,13 @@
 - openai file convesation format file -> binary +options, and then json -> binary -> file
     > Also has a loading status to let you know its working.
 - nvim plugin that  can run openai utils in bg and then refresh current buffer/file
+- archive something
+    > Either in
 
 ## Doing
 
+- wrap that respects new-lines
+- sfilter given a list of files filters one that meets size requirements
 
 ## Done
 
