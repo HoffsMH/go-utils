@@ -5,8 +5,8 @@ import (
 )
 
 func TestWrapGetsRidOfPrematureNewlines1(t *testing.T) {
-  // t.Skip("trying to switch to my wrap func")
-  content := `
+	// t.Skip("trying to switch to my wrap func")
+	content := `
 asdf`
 	expected := `
 asdf`
@@ -18,8 +18,8 @@ asdf`
 }
 
 func TestWrapGetsRidOfPrematureNewlines2(t *testing.T) {
-  // t.Skip("trying to switch to my wrap func")
-  content := `
+	// t.Skip("trying to switch to my wrap func")
+	content := `
 asdf
 `
 	expected := `
@@ -33,8 +33,8 @@ asdf
 }
 
 func TestWrapGetsRidOfPrematureNewlines3(t *testing.T) {
-  // t.Skip("trying to switch to my wrap func")
-  content := `
+	// t.Skip("trying to switch to my wrap func")
+	content := `
 asdf
 asdf
 `
@@ -49,8 +49,8 @@ asdf asdf
 }
 
 func TestWrap2(t *testing.T) {
-  // t.Skip("trying to switch to my wrap func")
-  content := `
+	// t.Skip("trying to switch to my wrap func")
+	content := `
 asdf asdf
 asdf
 `
@@ -65,8 +65,8 @@ asdf asdf asdf
 }
 
 func TestWrap3(t *testing.T) {
-  // t.Skip("skip")
-  content := `
+	// t.Skip("skip")
+	content := `
 asdf asdf asdf asdf
 asdf
 `
@@ -82,8 +82,8 @@ asdf
 }
 
 func TestWrap4(t *testing.T) {
-  // t.Skip("trying to switch to my wrap func")
-  content := `
+	// t.Skip("trying to switch to my wrap func")
+	content := `
 asdf asdf asdf asdf
 asdf`
 	expected := `
@@ -97,8 +97,8 @@ asdf`
 }
 
 func TestWrapPreservesParagraphs1(t *testing.T) {
-  // t.Skip("skip")
-  content := `
+	// t.Skip("skip")
+	content := `
 asdf asdf asdf asdf
 asdf
 
@@ -116,8 +116,8 @@ asdf`
 }
 
 func TestWrapGetsRidOfPrematureNewlines(t *testing.T) {
-  // t.Skip("trying to switch to my wrap func")
-  content := `
+	// t.Skip("trying to switch to my wrap func")
+	content := `
 asdf
 asdf
 asdf
@@ -139,8 +139,8 @@ asdf asdf asd fsdf
 }
 
 func TestWrapPreservesIndents1(t *testing.T) {
-  // t.Skip("skip")
-  content := `
+	// t.Skip("skip")
+	content := `
 asdf asdf
 asdf
 
@@ -159,8 +159,8 @@ asdf asdf asdf
 }
 
 func TestWrapPreservesIndents2(t *testing.T) {
-  // t.Skip("skip")
-  content := `
+	// t.Skip("skip")
+	content := `
 asdf asdf
 asdf
 
@@ -185,8 +185,8 @@ asdf asdf asdf
 }
 
 func TestWrapPreservesIndents3(t *testing.T) {
-  // t.Skip("skip")
-  content := `
+	// t.Skip("skip")
+	content := `
 asdf asdf asdf asdf asdf asdf asdf asdf asdf
 
     asdf
@@ -212,4 +212,3 @@ asdf asdf asdf
 		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
 	}
 }
-

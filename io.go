@@ -40,15 +40,15 @@ func Stdin() []string {
 func StdinAll() string {
 	var content string
 
-  fi, err := os.Stdin.Stat()
-  if err == nil && (fi.Mode()&os.ModeCharDevice) == 0 {
-    scanner := bufio.NewScanner(os.Stdin)
-    for scanner.Scan() {
-      content += scanner.Text()
-    }
-    return content
-  }
-  return ""
+	fi, err := os.Stdin.Stat()
+	if err == nil && (fi.Mode()&os.ModeCharDevice) == 0 {
+		scanner := bufio.NewScanner(os.Stdin)
+		for scanner.Scan() {
+			content += scanner.Text()
+		}
+		return content
+	}
+	return ""
 }
 
 func readFile(filename string) (string, error) {

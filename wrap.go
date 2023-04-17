@@ -9,148 +9,147 @@ import (
 const nbsp = 0xA0
 
 type NewContent struct {
-	WordBuf  *bytes.Buffer
-	SpaceBuf *bytes.Buffer
-	Value   *bytes.Buffer
-  CurrentLineIndex int
-  Lim int
+	WordBuf          *bytes.Buffer
+	SpaceBuf         *bytes.Buffer
+	Value            *bytes.Buffer
+	CurrentLineIndex int
+	Lim              int
 }
 
 func Wrap(content string, lim int) string {
 
 	init := make([]byte, 0, len(content))
 	buf := bytes.NewBuffer(init)
-  newContent := &NewContent{
-    Lim: lim,
-    WordBuf: bytes.NewBuffer([]byte{}),
-    SpaceBuf: bytes.NewBuffer([]byte{}),
-    Value: buf,
-  }
+	newContent := &NewContent{
+		Lim:      lim,
+		WordBuf:  bytes.NewBuffer([]byte{}),
+		SpaceBuf: bytes.NewBuffer([]byte{}),
+		Value:    buf,
+	}
 
-  var ncount int
-  for i, char := range content {
-    if char == '\n' {
-      ncount++
-    }
+	var ncount int
+	for i, char := range content {
+		if char == '\n' {
+			ncount++
+		}
 
-    if char != ' ' && char != '\n' {
-      theCharIsChar(i, char, content, newContent)
-      continue
-    }
+		if char != ' ' && char != '\n' {
+			theCharIsChar(i, char, content, newContent)
+			continue
+		}
 
-    if char == ' ' {
-      theCharIsSpace(i, char, newContent)
-      continue
-    }
+		if char == ' ' {
+			theCharIsSpace(i, char, newContent)
+			continue
+		}
 
-    if char == '\n' {
-      theCharIsNewline(i, char, content, newContent)
-      continue
-    }
-  }
+		if char == '\n' {
+			theCharIsNewline(i, char, content, newContent)
+			continue
+		}
+	}
 
-  return string(newContent.Value.String())
+	return string(newContent.Value.String())
 }
 
 func theCharIsChar(i int, char rune, content string, newContent *NewContent) {
-  wordBuf := newContent.WordBuf
-  spaceBuf := newContent.SpaceBuf
-  value := newContent.Value
-  lim := newContent.Lim
+	wordBuf := newContent.WordBuf
+	spaceBuf := newContent.SpaceBuf
+	value := newContent.Value
+	lim := newContent.Lim
 
-  wordBuf.WriteRune(char)
-  newContent.CurrentLineIndex++
+	wordBuf.WriteRune(char)
+	newContent.CurrentLineIndex++
 
-  if i == len(content) - 1 {
-    if newContent.CurrentLineIndex > lim {
-      value.WriteRune('\n')
-      wordBuf.WriteTo(value)
-      return
-    }
-    spaceBuf.WriteTo(value)
-    wordBuf.WriteTo(value)
-    return
-  }
+	if i == len(content)-1 {
+		if newContent.CurrentLineIndex > lim {
+			value.WriteRune('\n')
+			wordBuf.WriteTo(value)
+			return
+		}
+		spaceBuf.WriteTo(value)
+		wordBuf.WriteTo(value)
+		return
+	}
 }
 
 func theCharIsSpace(i int, char rune, newContent *NewContent) {
-  //if we are before the limit
-  wordBuf := newContent.WordBuf
-  spaceBuf := newContent.SpaceBuf
-  value := newContent.Value
-  lim := newContent.Lim
-  currentLineIndex := newContent.CurrentLineIndex
-  newContent.CurrentLineIndex++
+	//if we are before the limit
+	wordBuf := newContent.WordBuf
+	spaceBuf := newContent.SpaceBuf
+	value := newContent.Value
+	lim := newContent.Lim
+	currentLineIndex := newContent.CurrentLineIndex
+	newContent.CurrentLineIndex++
 
-  if currentLineIndex >= lim {
-    value.WriteRune('\n')
-    newContent.CurrentLineIndex = 0 + wordBuf.Len()
-  } else {
-    spaceBuf.WriteTo(value)
-  }
-  wordBuf.WriteTo(value)
-  wordBuf.Reset()
-  spaceBuf.Reset()
-  spaceBuf.WriteRune(char)
+	if currentLineIndex >= lim {
+		value.WriteRune('\n')
+		newContent.CurrentLineIndex = 0 + wordBuf.Len()
+	} else {
+		spaceBuf.WriteTo(value)
+	}
+	wordBuf.WriteTo(value)
+	wordBuf.Reset()
+	spaceBuf.Reset()
+	spaceBuf.WriteRune(char)
 }
 
 func theCharIsNewline(i int, char rune, content string, newContent *NewContent) {
-  wordBuf := newContent.WordBuf
-  spaceBuf := newContent.SpaceBuf
-  value := newContent.Value
-  lim := newContent.Lim
-  currentLineIndex := newContent.CurrentLineIndex
+	wordBuf := newContent.WordBuf
+	spaceBuf := newContent.SpaceBuf
+	value := newContent.Value
+	lim := newContent.Lim
+	currentLineIndex := newContent.CurrentLineIndex
 
-  if i > 0 && string(content[i-1]) == "\n" {
-    value.WriteRune('\n')
-    value.WriteRune('\n')
-    spaceBuf.Reset()
-    newContent.CurrentLineIndex = 0
-    return
-  }
+	if i > 0 && string(content[i-1]) == "\n" {
+		value.WriteRune('\n')
+		value.WriteRune('\n')
+		spaceBuf.Reset()
+		newContent.CurrentLineIndex = 0
+		return
+	}
 
-  // we need to wrap and current char is a newline
-  if currentLineIndex > lim {
-    value.WriteRune(char)
-    newContent.CurrentLineIndex = 0
-    wordBuf.WriteTo(value)
-    // spaceBuf.Reset()
-    wordBuf.Reset()
-    if i == len(content) - 1 {
-      value.WriteRune('\n')
-    }
+	// we need to wrap and current char is a newline
+	if currentLineIndex > lim {
+		value.WriteRune(char)
+		newContent.CurrentLineIndex = 0
+		wordBuf.WriteTo(value)
+		// spaceBuf.Reset()
+		wordBuf.Reset()
+		if i == len(content)-1 {
+			value.WriteRune('\n')
+		}
 
-    return
-  }
+		return
+	}
 
-  // the entire input ends in newline
-  if i == len(content) - 1 {
-    spaceBuf.WriteTo(value)
-    wordBuf.WriteTo(value)
-    value.WriteRune(char)
-    return
-  }
+	// the entire input ends in newline
+	if i == len(content)-1 {
+		spaceBuf.WriteTo(value)
+		wordBuf.WriteTo(value)
+		value.WriteRune(char)
+		return
+	}
 
-  // the current line begins with a newline
-  if currentLineIndex == 0 {
-    value.WriteRune(char)
-    spaceBuf.Reset()
+	// the current line begins with a newline
+	if currentLineIndex == 0 {
+		value.WriteRune(char)
+		spaceBuf.Reset()
 
-    return
-  }
+		return
+	}
 
-  // if we are before the limit treat the newline as a space and write
-  if currentLineIndex < lim {
-    spaceBuf.WriteTo(value)
-    wordBuf.WriteTo(value)
-    spaceBuf.Reset()
-    wordBuf.Reset()
-    spaceBuf.WriteRune(' ')
-    newContent.CurrentLineIndex++
-    return
-  }
+	// if we are before the limit treat the newline as a space and write
+	if currentLineIndex < lim {
+		spaceBuf.WriteTo(value)
+		wordBuf.WriteTo(value)
+		spaceBuf.Reset()
+		wordBuf.Reset()
+		spaceBuf.WriteRune(' ')
+		newContent.CurrentLineIndex++
+		return
+	}
 }
-
 
 // WrapString wraps the given string within lim width in characters.
 //
@@ -169,7 +168,7 @@ func WrapString(s string, lim uint) string {
 
 	for _, char := range s {
 		if char == '\n' {
-      // does the text begin with a newline?
+			// does the text begin with a newline?
 			if wordBuf.Len() == 0 {
 				if current+spaceBufLen > lim {
 					current = 0
@@ -227,4 +226,3 @@ func WrapString(s string, lim uint) string {
 
 	return strings.Trim(string(buf.String()), " ")
 }
-

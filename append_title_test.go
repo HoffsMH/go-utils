@@ -11,7 +11,7 @@ type MockCollector struct {
 }
 
 func (mc *MockCollector) OnHTML(goqueryMatcher string, f colly.HTMLCallback) {
-  mc.onHTMLCallback = f
+	mc.onHTMLCallback = f
 }
 
 func (mc *MockCollector) Visit(URL string) error {

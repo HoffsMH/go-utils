@@ -36,7 +36,6 @@ func AppendTitle(c Collector, content []string) string {
 					return
 				}
 
-
 				newContent = append(newContent, FormatTitle(e.Text))
 			})
 
