@@ -1,25 +1,38 @@
 package util
 
 import (
-	"io/fs"
-	"io/ioutil"
+	"log"
 	"os"
 )
 
-func SFilter(fileNames, lowerLimit int64, upperLimit int64) []string {
-	var dirs []fs.FileInfo
+func SFilter(fileNames []string, lowerLimit int, upperLimit int) []string {
 	var results = []string{}
 
-	if len(os.Args) > 0 {
-		dirs, _ = ioutil.ReadDir(os.Args[1])
-	} else {
-		dirs, _ = ioutil.ReadDir(".")
-	}
+	for _, fileName := range fileNames {
+    file, err := os.Stat(fileName)
+    if err != nil {
+      log.Fatalf("no such file %q", fileName)
+    }
 
-	for _, file := range dirs {
-		if file.Size() > lowerLimit || file.Size() < upperLimit {
-			results = append(results, file.Name())
-		}
+    if lowerLimit > 0 && upperLimit > 0 {
+      if file.Size() > int64(lowerLimit) && file.Size() < int64(upperLimit) {
+        results = append(results, fileName)
+        continue
+      }
+    }
+    if lowerLimit > 0 {
+      if file.Size() > int64(lowerLimit) {
+        results = append(results, fileName)
+        continue
+      }
+    }
+
+    if upperLimit > 0 {
+      if file.Size() < int64(upperLimit) {
+        results = append(results, fileName)
+        continue
+      }
+    }
 	}
 	return results
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -10,41 +11,41 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var lessThan int
-var greaterThan int
-var kb int64 = 1000
-var mb int64 = 1000 * kb
-var gb int64 = 1000 * mb
+var lessThan string
+var greaterThan string
+var kb int = 1000
+var mb int = 1000 * kb
+var gb int = 1000 * mb
 
 var rootCmd = &cobra.Command{
 	Use: "sfilter",
 	Long: "outputs a file name to std out with a date prefix if it does not already have one",
-	Args:    cobra.MinimumNArgs(1),
+	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		terms := util.GetTerms(args)
-
-
-    util.PrintList(util.SFilter(convert(terms[0], greaterThan, lessThan)))
+    util.PrintList(util.SFilter(util.Stdin(), convert(greaterThan), convert(lessThan)))
   },
 }
 
-func convert(sizeStr string) int64 {
-  var num int64
-  if (strings.HasSuffix(sizeStr, "G") ) {
-    num, _ = strconv.ParseInt(sizeStr[:len(sizeStr) - 1], 10, 64)
+func convert(sizeStr string) int {
+  var num int = -1
+  if sizeStr == "" {
+    return num
+  }
 
+  num, err := strconv.Atoi(sizeStr[:len(sizeStr) - 1])
+  if err != nil {
+    log.Fatalf("cannot conver %q to num", sizeStr)
+  }
+
+  if (strings.HasSuffix(sizeStr, "G") ) {
     return num * gb
   }
 
   if (strings.HasSuffix(sizeStr, "M") ) {
-    num, _ = strconv.ParseInt(sizeStr[:len(sizeStr) - 1], 10, 64)
-
     return num * mb
   }
 
   if (strings.HasSuffix(sizeStr, "K") ) {
-    num, _ = strconv.ParseInt(sizeStr[:len(sizeStr) - 1], 10, 64)
-
     return num * kb
   }
   return num
@@ -59,8 +60,8 @@ func main() {
 
 
 func init() {
-  rootCmd.Flags().IntVarP(&lessThan, "less-than", "lt", 2, "the amount of days to look back.")
-  rootCmd.Flags().IntVarP(&greaterThan, "greater-than", "gt", 0, "the amount of weeks to look back.")
+  rootCmd.Flags().StringVarP(&lessThan, "less-than", "l", "", "the amount of days to look back.")
+  rootCmd.Flags().StringVarP(&greaterThan, "greater-than", "g", "500M", "the amount of weeks to look back.")
 }
 
 
