@@ -4,40 +4,212 @@ import (
 	"testing"
 )
 
-// func TestWrap(t *testing.T) {
-//   // collapses double newlines to one
-//   // preserves indents
-//   content := `asdf asdf asdf asdf asdf asdf asdf sadf sadf asdf asdf asdf asdf asdf asdf asdfas dfasf
-//   asdfsadf asdf asdf asdf asdf asdf asdf sadf asdf asdf asdf asdf
-//
-//   asdfasd asdf asdf asdf asdf asdf asd fsdf
-//
-//       asdfasdfasdfas sadff sdf asdf asdf asdf asdf asdfas dfas dfsd asdf asdf sadf asdf asdf
-//   asadfasdfasdf asdf asdf asdf asdf sadf sadf asdf sad fsadf asfd
-// `
-// 	expected := `asdf`
-//
-// 	result := Wrap(content, 50)
-// 	if result != expected {
-// 		t.Errorf("Wrap(%v) = %v; expected %v", content, result, expected)
-// 	}
-// }
+func TestWrapGetsRidOfPrematureNewlines1(t *testing.T) {
+  // t.Skip("trying to switch to my wrap func")
+  content := `
+asdf`
+	expected := `
+asdf`
 
-func TestWrapok(t *testing.T) {
-  // collapses double newlines to one
-  // preserves indents
-  content := `asdf asdf asdf asdf asdf asdf asdf sadf sadf asdf asdf asdf asdf asdf asdf asdfas dfasf
-  asdfsadf asdf asdf asdf asdf asdf asdf sadf asdf asdf asdf asdf
-
-  asdfasd asdf asdf asdf asdf asdf asd fsdf 
-
-      asdfasdfasdfas sadff sdf asdf asdf asdf asdf asdfas dfas dfsd asdf asdf sadf asdf asdf 
-  asadfasdfasdf asdf asdf asdf asdf sadf sadf asdf sad fsadf asfd
-`
-	expected := `asdf`
-
-	result := WrapString(content, 50)
+	result := Wrap(content, 20)
 	if result != expected {
-		t.Errorf("Wrap(%v) = %v; expected %v", content, result, expected)
+		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
 	}
 }
+
+func TestWrapGetsRidOfPrematureNewlines2(t *testing.T) {
+  // t.Skip("trying to switch to my wrap func")
+  content := `
+asdf
+`
+	expected := `
+asdf
+`
+
+	result := Wrap(content, 20)
+	if result != expected {
+		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
+	}
+}
+
+func TestWrapGetsRidOfPrematureNewlines3(t *testing.T) {
+  // t.Skip("trying to switch to my wrap func")
+  content := `
+asdf
+asdf
+`
+	expected := `
+asdf asdf
+`
+
+	result := Wrap(content, 20)
+	if result != expected {
+		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
+	}
+}
+
+func TestWrap2(t *testing.T) {
+  // t.Skip("trying to switch to my wrap func")
+  content := `
+asdf asdf
+asdf
+`
+	expected := `
+asdf asdf asdf
+`
+
+	result := Wrap(content, 20)
+	if result != expected {
+		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
+	}
+}
+
+func TestWrap3(t *testing.T) {
+  // t.Skip("skip")
+  content := `
+asdf asdf asdf asdf
+asdf
+`
+	expected := `
+asdf asdf asdf asdf
+asdf
+`
+
+	result := Wrap(content, 20)
+	if result != expected {
+		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
+	}
+}
+
+func TestWrap4(t *testing.T) {
+  // t.Skip("trying to switch to my wrap func")
+  content := `
+asdf asdf asdf asdf
+asdf`
+	expected := `
+asdf asdf asdf asdf
+asdf`
+
+	result := Wrap(content, 20)
+	if result != expected {
+		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
+	}
+}
+
+func TestWrapPreservesParagraphs1(t *testing.T) {
+  // t.Skip("skip")
+  content := `
+asdf asdf asdf asdf
+asdf
+
+asdf`
+	expected := `
+asdf asdf asdf asdf
+asdf
+
+asdf`
+
+	result := Wrap(content, 20)
+	if result != expected {
+		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
+	}
+}
+
+func TestWrapGetsRidOfPrematureNewlines(t *testing.T) {
+  // t.Skip("trying to switch to my wrap func")
+  content := `
+asdf
+asdf
+asdf
+asdf
+asdf
+asdf
+asd
+fsdf
+`
+	expected := `
+asdf asdf asdf asdf
+asdf asdf asd fsdf
+`
+
+	result := Wrap(content, 20)
+	if result != expected {
+		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
+	}
+}
+
+func TestWrapPreservesIndents1(t *testing.T) {
+  // t.Skip("skip")
+  content := `
+asdf asdf
+asdf
+
+    asdf
+`
+	expected := `
+asdf asdf asdf
+
+    asdf
+`
+
+	result := Wrap(content, 20)
+	if result != expected {
+		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
+	}
+}
+
+func TestWrapPreservesIndents2(t *testing.T) {
+  // t.Skip("skip")
+  content := `
+asdf asdf
+asdf
+
+    asdf
+asdf
+asdf
+asdf
+asdf
+asdf
+`
+	expected := `
+asdf asdf asdf
+
+    asdf asdf asdf
+asdf asdf asdf
+`
+
+	result := Wrap(content, 20)
+	if result != expected {
+		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
+	}
+}
+
+func TestWrapPreservesIndents3(t *testing.T) {
+  // t.Skip("skip")
+  content := `
+asdf asdf asdf asdf asdf asdf asdf asdf asdf
+
+    asdf
+asdf
+asdf
+asdf
+asdf
+asdf
+
+`
+	expected := `
+asdf asdf asdf asdf
+asdf asdf asdf asdf
+asdf
+
+    asdf asdf asdf
+asdf asdf asdf
+
+`
+
+	result := Wrap(content, 20)
+	if result != expected {
+		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
+	}
+}
+

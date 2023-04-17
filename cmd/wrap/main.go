@@ -26,12 +26,14 @@ var rootCmd = &cobra.Command{
 
     inputString := util.StdinAll()
     if inputString != "" {
-       fmt.Print(util.WrapString(inputString, uint(num)))
+       fmt.Print(util.Wrap(inputString, num))
     } else {
       cmd := exec.Command("xclip", "-selection", "clipboard", "-o")
       clipContents, _ := cmd.Output()
 
-     fmt.Print(util.WrapString(string(clipContents), uint(num)))
+     fmt.Print(
+       util.Wrap(string(clipContents), num),
+    )
     }
   },
 }
