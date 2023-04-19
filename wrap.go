@@ -24,24 +24,20 @@ func Wrap(content string, lim int) string {
 		Value:    bytes.NewBuffer([]byte{}),
 	}
 
-	var ncount int
 	for i, char := range content {
-		if char == '\n' {
-			ncount++
-		}
-
 		if char != ' ' && char != '\n' {
-			theCharIsChar(i, char, content, newContent)
+      newContent.CurrentLineIndex++
+			handleNonWhitespace(i, char, content, newContent)
 			continue
 		}
 
 		if char == ' ' {
-			theCharIsSpace(i, char, newContent)
+			handleSpace(i, char, newContent)
 			continue
 		}
 
 		if char == '\n' {
-			theCharIsNewline(i, char, content, newContent)
+			handleNewline(i, char, content, newContent)
 			continue
 		}
 	}
@@ -49,14 +45,13 @@ func Wrap(content string, lim int) string {
 	return string(newContent.Value.String())
 }
 
-func theCharIsChar(i int, char rune, content string, newContent *NewContent) {
+func handleNonWhitespace(i int, char rune, content string, newContent *NewContent) {
 	wordBuf := newContent.WordBuf
 	spaceBuf := newContent.SpaceBuf
 	value := newContent.Value
 	lim := newContent.Lim
 
 	wordBuf.WriteRune(char)
-	newContent.CurrentLineIndex++
 
 	if i == len(content)-1 {
 		if newContent.CurrentLineIndex > lim {
@@ -69,19 +64,25 @@ func theCharIsChar(i int, char rune, content string, newContent *NewContent) {
 		return
 	}
 }
+func isPastLim(newContent *NewContent) bool {
+	currentLineIndex := newContent.CurrentLineIndex
+	lim := newContent.Lim
 
-func theCharIsSpace(i int, char rune, newContent *NewContent) {
-	//if we are before the limit
+  return currentLineIndex >= lim;
+}
+
+func handleSpace(i int, char rune, newContent *NewContent) {
 	wordBuf := newContent.WordBuf
 	spaceBuf := newContent.SpaceBuf
 	value := newContent.Value
 	lim := newContent.Lim
 	currentLineIndex := newContent.CurrentLineIndex
+
 	newContent.CurrentLineIndex++
 
 	if currentLineIndex >= lim {
 		value.WriteRune('\n')
-		newContent.CurrentLineIndex = 0 + wordBuf.Len()
+		newContent.CurrentLineIndex = wordBuf.Len()
 	} else {
 		spaceBuf.WriteTo(value)
 	}
@@ -91,13 +92,16 @@ func theCharIsSpace(i int, char rune, newContent *NewContent) {
 	spaceBuf.WriteRune(char)
 }
 
-func theCharIsNewline(i int, char rune, content string, newContent *NewContent) {
+func handleNewline(i int, char rune, content string, newContent *NewContent) {
 	wordBuf := newContent.WordBuf
 	spaceBuf := newContent.SpaceBuf
 	value := newContent.Value
 	lim := newContent.Lim
 	currentLineIndex := newContent.CurrentLineIndex
 
+  // If we have a double newline that represents a paragraph
+  // so I want to immeadialy append the 2 newlines
+  // and get ready for the new paragraph's indent level
 	if i > 0 && string(content[i-1]) == "\n" {
 		value.WriteRune('\n')
 		value.WriteRune('\n')
@@ -111,7 +115,6 @@ func theCharIsNewline(i int, char rune, content string, newContent *NewContent) 
 		value.WriteRune(char)
 		newContent.CurrentLineIndex = 0
 		wordBuf.WriteTo(value)
-		// spaceBuf.Reset()
 		wordBuf.Reset()
 		if i == len(content)-1 {
 			value.WriteRune('\n')
