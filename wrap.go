@@ -17,14 +17,11 @@ type NewContent struct {
 }
 
 func Wrap(content string, lim int) string {
-
-	init := make([]byte, 0, len(content))
-	buf := bytes.NewBuffer(init)
 	newContent := &NewContent{
 		Lim:      lim,
 		WordBuf:  bytes.NewBuffer([]byte{}),
 		SpaceBuf: bytes.NewBuffer([]byte{}),
-		Value:    buf,
+		Value:    bytes.NewBuffer([]byte{}),
 	}
 
 	var ncount int

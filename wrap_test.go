@@ -1,11 +1,11 @@
 package util
 
 import (
+	"fmt"
 	"testing"
 )
 
 func TestWrapGetsRidOfPrematureNewlines1(t *testing.T) {
-	// t.Skip("trying to switch to my wrap func")
 	content := `
 asdf`
 	expected := `
@@ -18,7 +18,6 @@ asdf`
 }
 
 func TestWrapGetsRidOfPrematureNewlines2(t *testing.T) {
-	// t.Skip("trying to switch to my wrap func")
 	content := `
 asdf
 `
@@ -33,7 +32,6 @@ asdf
 }
 
 func TestWrapGetsRidOfPrematureNewlines3(t *testing.T) {
-	// t.Skip("trying to switch to my wrap func")
 	content := `
 asdf
 asdf
@@ -49,7 +47,6 @@ asdf asdf
 }
 
 func TestWrap2(t *testing.T) {
-	// t.Skip("trying to switch to my wrap func")
 	content := `
 asdf asdf
 asdf
@@ -65,7 +62,6 @@ asdf asdf asdf
 }
 
 func TestWrap3(t *testing.T) {
-	// t.Skip("skip")
 	content := `
 asdf asdf asdf asdf
 asdf
@@ -82,7 +78,6 @@ asdf
 }
 
 func TestWrap4(t *testing.T) {
-	// t.Skip("trying to switch to my wrap func")
 	content := `
 asdf asdf asdf asdf
 asdf`
@@ -97,7 +92,6 @@ asdf`
 }
 
 func TestWrapPreservesParagraphs1(t *testing.T) {
-	// t.Skip("skip")
 	content := `
 asdf asdf asdf asdf
 asdf
@@ -116,7 +110,6 @@ asdf`
 }
 
 func TestWrapGetsRidOfPrematureNewlines(t *testing.T) {
-	// t.Skip("trying to switch to my wrap func")
 	content := `
 asdf
 asdf
@@ -139,7 +132,6 @@ asdf asdf asd fsdf
 }
 
 func TestWrapPreservesIndents1(t *testing.T) {
-	// t.Skip("skip")
 	content := `
 asdf asdf
 asdf
@@ -159,7 +151,6 @@ asdf asdf asdf
 }
 
 func TestWrapPreservesIndents2(t *testing.T) {
-	// t.Skip("skip")
 	content := `
 asdf asdf
 asdf
@@ -178,14 +169,15 @@ asdf asdf asdf
 asdf asdf asdf
 `
 
-	result := Wrap(content, 20)
-	if result != expected {
-		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
-	}
+  result := Wrap(content, 20)
+  if result != expected {
+  fmt.Print("expected:", expected)
+  fmt.Print("result:", result)
+    t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
+  }
 }
 
 func TestWrapPreservesIndents3(t *testing.T) {
-	// t.Skip("skip")
 	content := `
 asdf asdf asdf asdf asdf asdf asdf asdf asdf
 
