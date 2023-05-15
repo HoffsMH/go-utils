@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sync"
 	"time"
 )
 
@@ -34,6 +35,22 @@ func JrnlLock(relPath string) string {
 
 	return "Done"
 }
+func shredFiles(matches []string) {
+	var wg sync.WaitGroup
+	wg.Add(len(matches))
+
+	for _, match := range matches {
+		go func(match string) {
+			defer wg.Done()
+			_, err := exec.Command("shred", "-u", "-n 1", match).Output()
+			if err != nil {
+				log.Fatalf("failed to shred file: %s", err)
+			}
+			log.Printf("finished shredding %s...", match)
+		}(match)
+	}
+	wg.Wait()
+}
 
 func tar(matches []string) {
 	tarName := genTarName(matches)
@@ -47,11 +64,9 @@ func tar(matches []string) {
 		log.Fatalf("failed to jrnlLock: tar command %s", err)
 	}
 	log.Println("finished tar...")
-
-	xargs = []string{"-u", "-n 1"}
-	xargs = append(xargs, matches...)
 	log.Println("shreding md files ...")
-	_, err = exec.Command("shred", xargs...).Output()
+
+	shredFiles(matches)
 }
 
 func genTarName(matches []string) string {
