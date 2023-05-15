@@ -61,7 +61,7 @@ func main() {
 
 func init() {
   rootCmd.Flags().StringVarP(&lessThan, "less-than", "l", "", "the amount of days to look back.")
-  rootCmd.Flags().StringVarP(&greaterThan, "greater-than", "g", "500M", "the amount of weeks to look back.")
+  rootCmd.Flags().StringVarP(&greaterThan, "greater-than", "g", "100M", "the amount of weeks to look back.")
 }
 
 
