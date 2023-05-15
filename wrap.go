@@ -26,7 +26,7 @@ func Wrap(content string, lim int) string {
 
 	for i, char := range content {
 		if char != ' ' && char != '\n' {
-      newContent.CurrentLineIndex++
+			newContent.CurrentLineIndex++
 			handleNonWhitespace(i, char, content, newContent)
 			continue
 		}
@@ -68,7 +68,7 @@ func isPastLim(newContent *NewContent) bool {
 	currentLineIndex := newContent.CurrentLineIndex
 	lim := newContent.Lim
 
-  return currentLineIndex >= lim;
+	return currentLineIndex >= lim
 }
 
 func handleSpace(i int, char rune, newContent *NewContent) {
@@ -99,9 +99,9 @@ func handleNewline(i int, char rune, content string, newContent *NewContent) {
 	lim := newContent.Lim
 	currentLineIndex := newContent.CurrentLineIndex
 
-  // If we have a double newline that represents a paragraph
-  // so I want to immeadialy append the 2 newlines
-  // and get ready for the new paragraph's indent level
+	// If we have a double newline that represents a paragraph
+	// so I want to immeadialy append the 2 newlines
+	// and get ready for the new paragraph's indent level
 	if i > 0 && string(content[i-1]) == "\n" {
 		value.WriteRune('\n')
 		value.WriteRune('\n')

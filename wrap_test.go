@@ -169,12 +169,12 @@ asdf asdf asdf
 asdf asdf asdf
 `
 
-  result := Wrap(content, 20)
-  if result != expected {
-  fmt.Print("expected:", expected)
-  fmt.Print("result:", result)
-    t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
-  }
+	result := Wrap(content, 20)
+	if result != expected {
+		fmt.Print("expected:", expected)
+		fmt.Print("result:", result)
+		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
+	}
 }
 
 func TestWrapPreservesIndents3(t *testing.T) {
