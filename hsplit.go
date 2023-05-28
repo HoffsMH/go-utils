@@ -15,19 +15,10 @@ type FileContent struct {
 	Dir     string
 }
 
-type OsInterface interface {
-  WriteFile(name string, data []byte, perm os.FileMode) error
-}
 
 type Hsplitter struct {
   Clock clock.Clock
   Os OsInterface
-}
-
-type OsWrapper struct{}
-
-func (o *OsWrapper) WriteFile(name string, data []byte, perm os.FileMode) error {
-    return os.WriteFile(name, data, perm)
 }
 
 func NewHsplitter(opts ...interface{}) (*Hsplitter) {
