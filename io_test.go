@@ -2,11 +2,14 @@ package util
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestGetTermsEmpty(t *testing.T) {
-	noTerms := GetTerms([]string{})
-	assert.Empty(t, noTerms)
+  content := []string{}
+  expected := 0
+	result := len(GetTerms(content))
+
+	if result != expected {
+		t.Errorf("len(GetTerms(%q)) = %q; expected %q", content, result, expected)
+	}
 }
