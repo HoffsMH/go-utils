@@ -12,9 +12,8 @@ var rootCmd = &cobra.Command{
 	Use: "hsplit",
 	Args: cobra.MinimumNArgs(0),
   Run: func(cmd *cobra.Command, args []string) {
-    // filename
-    // dir
-    util.Hsplit(util.Stdin(), args[0])
+    hsplitter := util.NewHsplitter()
+    hsplitter.Call(util.StdinLines(), args[0])
   },
 }
 

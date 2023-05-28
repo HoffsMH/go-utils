@@ -5,6 +5,8 @@ import (
 	"path"
 	"path/filepath"
 	"regexp"
+
+	"github.com/jmhodges/clock"
 )
 
 type FileContent struct {
@@ -13,11 +15,38 @@ type FileContent struct {
 	Dir     string
 }
 
+type OsInterface interface {
+  WriteFile(name string, data []byte, perm os.FileMode) error
+}
+
+type Hsplitter struct {
+  Clock clock.Clock
+  Os OsInterface
+}
+
+type OsWrapper struct{}
+
+func (o *OsWrapper) WriteFile(name string, data []byte, perm os.FileMode) error {
+    return os.WriteFile(name, data, perm)
+}
+
+func NewHsplitter(opts ...interface{}) (*Hsplitter) {
+  newClock := clock.New();
+  if len(opts) > 0 {
+    newClock = opts[0].(clock.Clock)
+  }
+
+  return &Hsplitter {
+    Clock: newClock,
+    Os: &OsWrapper{},
+  }
+}
+
 // given text that contains some lines that begin with ## (h2 heading in md)
 // split every heading into its own file in a given directory
 //
 // # cat $somefile | hsplit $somdir
-func Hsplit(lines []string, dir string) {
+func (h *Hsplitter) Call(lines []string, dir string) {
 	var result []FileContent
 
 	r := regexp.MustCompile(heading + " (.*)")
@@ -34,12 +63,12 @@ func Hsplit(lines []string, dir string) {
 		// we found a header on the current line
 		if len(match) > 1 {
 			// start a new header
-			result = append([]FileContent{newFileContent(match[1], dir)}, result...)
+			result = append([]FileContent{h.newFileContent(match[1], dir)}, result...)
 		}
 	}
 	result = pruneEmptyFileContents(result)
 
-	WriteSplits(result)
+	h.WriteSplits(result)
 }
 
 func pruneEmptyFileContents(fcs []FileContent) []FileContent {
@@ -57,10 +86,10 @@ func pruneEmptyFileContents(fcs []FileContent) []FileContent {
 	return pruned
 }
 
-func newFileContent(name string, dir string) FileContent {
+func (h *Hsplitter) newFileContent(name string, dir string) FileContent {
 	dir, _ = filepath.Abs(dir)
 	if _, err := parseDateFileName(name); err != nil {
-		name = prependCurrentISODate(name)
+		name = NewPrefixer(h.Clock).prependCurrentDate(name)
 	}
 
 	return FileContent{
@@ -70,8 +99,8 @@ func newFileContent(name string, dir string) FileContent {
 	}
 }
 
-func WriteSplits(fcs []FileContent) {
+func (h *Hsplitter) WriteSplits(fcs []FileContent) {
 	for _, fc := range fcs {
-		os.WriteFile(path.Join(fc.Dir, fc.Name), []byte(fc.Content), 0644)
+		h.Os.WriteFile(path.Join(fc.Dir, fc.Name), []byte(fc.Content), 0644)
 	}
 }
