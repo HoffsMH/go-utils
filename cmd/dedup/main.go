@@ -16,7 +16,7 @@ var rootCmd = &cobra.Command{
 	Long: "dedups all lines that match patterns",
 	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-    util.PrintList(util.DeDup(util.Stdin(), before, args[0]))
+    util.PrintList(util.DeDup(util.StdinLines(), before, args[0]))
   },
 }
 

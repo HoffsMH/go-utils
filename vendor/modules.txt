@@ -9,8 +9,6 @@ github.com/inconshreveable/mousetrap
 # github.com/jmhodges/clock v1.2.0
 ## explicit; go 1.17
 github.com/jmhodges/clock
-# github.com/pmezard/go-difflib v1.0.0
-## explicit
 # github.com/spf13/cobra v1.5.0
 ## explicit; go 1.15
 github.com/spf13/cobra
