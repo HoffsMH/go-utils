@@ -2,7 +2,6 @@ package util
 
 import (
 	"errors"
-	"os"
 	"path"
 	"path/filepath"
 	"time"
@@ -12,51 +11,48 @@ import (
 	"github.com/araddon/dateparse"
 )
 
-type PrefixOptions struct {
+type Prefixer struct {
   Clock clock.Clock
   Format string
 }
 
-func nowFormat(...opts PrePrefixOptions) {
-  return opts.clock.Now().Format(opts.Format)
+func NewPrefixer(opts ...interface{}) (*Prefixer) {
+  newClock := clock.New();
+  if len(opts) > 0 {
+    newClock = opts[0].(clock.Clock)
+  }
+
+  // "2006-01-02"
+  format := time.RFC3339
+  if len(opts) > 1 {
+    format = opts[1].(string)
+  }
+
+  return &Prefixer {
+    Clock: newClock,
+    Format: format,
+  }
 }
-// current time in iso format
-func nowISODate(clock clock.Clock) string {
-  return clock.Now().Format(time.RFC3339)
+
+func (p *Prefixer) nowFormat() string {
+  return p.Clock.Now().Format(p.Format)
 }
 
 // appends current iso time to any string
-func prependCurrentISODate(str string, clock clock.Clock) string {
-  return nowISODate(clock) + "-" + str
+func (p *Prefixer) prependCurrentDate(str string) string {
+  return p.nowFormat() + "-" + str
 }
-
-func nowDate(clock clock.Clock) string {
-  return clock.Now().Format("2006-01-02")
-}
-
-func prependCurrentDate(str string, clock clock.Clock) string {
-  return nowDate(clock) + "-" + str
-}
-
 
 // given a string -- outputs a filepath prefixed with current date
-func PrefixNamesISO(filepaths []string, opts ...Options) []string {
+func (p *Prefixer) Names(filepaths []string) []string {
 	results := []string{}
 	for _, name := range filepaths {
-    PrefixNameISO(name, opts...)
+    results = append(results, p.Name(name))
 	}
 	return results
 }
 
-func PrefixNameISO(str string, opts ...Options) string {
-    // Default values
-    clock := clock.New();
-
-    // Override if passed
-    if len(opts) > 0 {
-        clock = opts[0].Clock
-    }
-
+func (p *Prefixer) Name(str string) string {
     oldabs, _ := filepath.Abs(str)
     oldbasename := path.Base(oldabs)
     dir := filepath.Dir(oldabs)
@@ -64,40 +60,7 @@ func PrefixNameISO(str string, opts ...Options) string {
     _, err := parseDateFileName(oldbasename)
 
     if err != nil {
-        newbasename := prependCurrentISODate(oldbasename, clock)
-        newabs := filepath.Join(dir, newbasename)
-
-        return newabs
-    }
-    return filepath.Join(dir, oldbasename)
-}
-
-// given a string -- outputs a filepath prefixed with current date
-func PrefixNamesDate(filepaths []string, opts ...Options) []string {
-	results := []string{}
-	for _, name := range filepaths {
-    PrefixName(name, opts...)
-	}
-	return results
-}
-
-func PrefixNameDate(str string, opts ...Options) string {
-    // Default values
-    clock := clock.New();
-
-    // Override if passed
-    if len(opts) > 0 {
-        clock = opts[0].Clock
-    }
-
-    oldabs, _ := filepath.Abs(str)
-    oldbasename := path.Base(oldabs)
-    dir := filepath.Dir(oldabs)
-
-    _, err := parseDateFileName(oldbasename)
-
-    if err != nil {
-        newbasename := prependCurrentDate(oldbasename, clock)
+        newbasename := p.prependCurrentDate(oldbasename)
         newabs := filepath.Join(dir, newbasename)
 
         return newabs
