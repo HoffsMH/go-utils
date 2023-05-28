@@ -5,6 +5,7 @@ import (
 	"path"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/jmhodges/clock"
 )
@@ -15,13 +16,14 @@ func TestPrefixNameISORelativeNameNoDir(t *testing.T) {
 	expected := wd + "/1970-01-01T00:00:00Z-" + "foo.md"
 
   fakeClock := clock.NewFake();
-  opts := PrefixOptions{
+  prefixer := &Prefixer{
     Clock: fakeClock,
+    Format: time.RFC3339,
   }
 
-	result := PrefixNameISO(content, opts)
+	result := prefixer.Name(content)
 	if result != expected {
-		t.Errorf("PrefixNameISO(%q) = %q; expected %q", content, result, expected)
+		t.Errorf("Name(%q) = %q; expected %q", content, result, expected)
 	}
 }
 
@@ -34,11 +36,12 @@ func TestPrefixNameISORelativeName(t *testing.T) {
 	expected := wd + "/1970-01-01T00:00:00Z-" + "foo.md"
 
   fakeClock := clock.NewFake();
-  opts := PrefixOptions{
+  prefixer := &Prefixer{
     Clock: fakeClock,
+    Format: time.RFC3339,
   }
 
-	result := PrefixNameISO(content, opts)
+	result := prefixer.Name(content)
 	if result != expected {
 		t.Errorf("PrefixNameISO(%q) = %q; expected %q", content, result, expected)
 	}
@@ -52,13 +55,14 @@ func TestPrefixNameISOAbs(t *testing.T) {
 	expected := wd + "/1970-01-01T00:00:00Z-" + "foo.md"
 
   fakeClock := clock.NewFake();
-  opts := PrefixOptions{
+  prefixer := &Prefixer{
     Clock: fakeClock,
+    Format: time.RFC3339,
   }
 
-	result := PrefixNameISO(content, opts)
+	result := prefixer.Name(content)
 	if result != expected {
-		t.Errorf("PrefixNameISO(%q) = %q; expected %q", content, result, expected)
+		t.Errorf("Name(%q) = %q; expected %q", content, result, expected)
 	}
 }
 
@@ -68,11 +72,12 @@ func TestPrefixNameDateRelativeNameNoDir(t *testing.T) {
 	expected := wd + "/1970-01-01-" + "foo.md"
 
   fakeClock := clock.NewFake();
-  opts := PrefixOptions{
+  prefixer := &Prefixer{
     Clock: fakeClock,
+    Format: "2006-01-02",
   }
 
-	result := PrefixNameDate(content, opts)
+	result := prefixer.Name(content)
 	if result != expected {
 		t.Errorf("PrefixNameISO(%q) = %q; expected %q", content, result, expected)
 	}
@@ -86,11 +91,12 @@ func TestPrefixNameDateRelativeName(t *testing.T) {
   wd = strings.Join(dirs, "/")
 	expected := wd + "/1970-01-01-" + "foo.md"
   fakeClock := clock.NewFake();
-  opts := PrefixOptions{
+  prefixer := Prefixer{
     Clock: fakeClock,
+    Format: "2006-01-02",
   }
 
-	result := PrefixNameDate(content, opts)
+	result := prefixer.Name(content)
 	if result != expected {
 		t.Errorf("PrefixNameISO(%q) = %q; expected %q", content, result, expected)
 	}
