@@ -14,9 +14,11 @@ var rootCmd = &cobra.Command{
 	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		terms := util.GetTerms(args)
-    c := &util.RealCollector{}
+    title_appender := &util.HtmlTitleAppender{
+      TitleGetter: &util.GetTitleWrapper{},
+    }
 
-    fmt.Println(util.AppendTitle(c, terms))
+    fmt.Println(title_appender.Call(terms))
   },
 }
 

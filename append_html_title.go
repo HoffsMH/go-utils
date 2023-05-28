@@ -1,14 +1,27 @@
 package util
 
 import (
+	"io/ioutil"
+	"log"
+	"net/http"
 	"regexp"
 	"strings"
 
-	"github.com/gocolly/colly/v2"
+	"golang.org/x/net/html"
 )
 
 // (?m) turns on multiline mode
 var linkTest *regexp.Regexp = regexp.MustCompile("(?m)(^http.*$)")
+
+type HtmlTitleAppender struct {
+	TitleGetter
+}
+
+type TitleGetter interface {
+	GetTitle(line string) string
+}
+
+type GetTitleWrapper struct {}
 
 // given a multiline string, append html title to previous lines that are http links
 // given:
@@ -21,39 +34,62 @@ var linkTest *regexp.Regexp = regexp.MustCompile("(?m)(^http.*$)")
 // ( Google )
 // http://google.com
 // bar
-func AppendTitle(c Collector, content []string) string {
+func (a *HtmlTitleAppender) Call(content []string) string {
 	newContent := []string{}
 
 	for _, line := range content {
 		result := linkTest.FindStringSubmatch(line)
 
 		if len(result) > 0 && !isAlreadyTitled(newContent) {
-
-			// Find and visit all links
-			c.OnHTML("title", func(e *colly.HTMLElement) {
-
-				if isAlreadyTitled(newContent) {
-					return
-				}
-
-				newContent = append(newContent, FormatTitle(e.Text))
-			})
-
-			c.OnError(func(_ *colly.Response, err error) {
-				if isAlreadyTitled(newContent) {
-					return
-				}
-
-				newContent = append(newContent, "( error )")
-			})
-
-			c.Visit(line)
+      title := a.GetTitle(line)
+      newContent = append(newContent, FormatTitle(title))
 		}
 
 		newContent = append(newContent, line)
 	}
 
 	return strings.Join(newContent, "\n")
+}
+
+func (gt *GetTitleWrapper) GetTitle(url string) string {
+  html, _ := getHtml(url)
+  return getTitle(html)
+}
+
+func getHtml(url string) (*html.Node, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Println("HTTP error:", err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("Read error:", err)
+		return nil, err
+	}
+
+	doc, err := html.Parse(strings.NewReader(string(body)))
+	if err != nil {
+		log.Println("Parse error:", err)
+		return nil, err
+	}
+
+	return doc, nil
+}
+
+func getTitle(n *html.Node) string {
+	if n.Type == html.ElementNode && n.Data == "title" {
+		return n.FirstChild.Data
+	}
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+    title := getTitle(c)
+		if title != "" {
+			return title
+		}
+	}
+	return "No title Found"
 }
 
 func isAlreadyTitled(newLines []string) bool {
@@ -76,13 +112,6 @@ func FormatTitle(text string) string {
 func removeNewlinesAndTabs(text string) string {
 	text = strings.Replace(text, "\n", "", -1)
 	return strings.Replace(text, "\t", "", -1)
-}
-
-func truncateString(str string, length int) string {
-	if len(str) > length {
-		return str[:length-1]
-	}
-	return str
 }
 
 func removeDuplicateWhitespace(inputString string) string {
