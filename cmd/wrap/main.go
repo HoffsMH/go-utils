@@ -24,7 +24,7 @@ var rootCmd = &cobra.Command{
       num = 80
     }
 
-    inputString := util.StdinAll()
+    inputString := util.Stdin()
     if inputString != "" {
        fmt.Print(util.Wrap(inputString, num))
     } else {

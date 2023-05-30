@@ -3,26 +3,15 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	util "git.mhkr.xyz/go-utils"
+	"github.com/jmhodges/clock"
 	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
 	Use: "prefix",
-}
-
-var fileCmd = &cobra.Command{
-	Use:   "file",
-	Short: "prefixes a file with the current iso date, if it does not already have one",
-	Long:  "file",
-
-	Aliases: []string{"f"},
-	Args:    cobra.MinimumNArgs(0),
-	Run: func(cmd *cobra.Command, args []string) {
-		terms := util.GetTerms(args)
-		util.PrintList(util.PrefixFiles(terms))
-	},
 }
 
 var nameCmd = &cobra.Command{
@@ -31,9 +20,37 @@ var nameCmd = &cobra.Command{
 
 	Aliases: []string{"n"},
 	Args:    cobra.MinimumNArgs(0),
+}
+
+var ISOCmd = &cobra.Command{
+	Use:  "iso",
+	Long: "outputs a file name to std out with a date prefix if it does not already have one",
+
+	Aliases: []string{"n"},
+	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		terms := util.GetTerms(args)
-		util.PrintList(util.PrefixNames(terms))
+    prefixer := &util.Prefixer{
+      Clock: clock.New(),
+      Format: time.RFC3339,
+    }
+		util.PrintList(prefixer.Names(terms))
+	},
+}
+
+var DateCmd = &cobra.Command{
+	Use:  "date",
+	Long: "outputs a file name to std out with a date prefix if it does not already have one",
+
+	Aliases: []string{"n"},
+	Args:    cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		terms := util.GetTerms(args)
+    prefixer := &util.Prefixer{
+      Clock: clock.New(),
+      Format: "2006-01-02",
+    }
+		util.PrintList(prefixer.Names(terms))
 	},
 }
 
@@ -45,6 +62,7 @@ func main() {
 }
 
 func init() {
+  nameCmd.AddCommand(ISOCmd)
+  nameCmd.AddCommand(DateCmd)
 	rootCmd.AddCommand(nameCmd)
-	rootCmd.AddCommand(fileCmd)
 }

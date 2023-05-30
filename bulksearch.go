@@ -15,6 +15,8 @@ type Result struct {
 	FileCount int
 }
 
+
+// Search searches for the given search terms in the given directories.
 func Search(searchTerms []string, dirs []string) []Result {
   var wg sync.WaitGroup;
   results := make([]Result, 0, len(searchTerms))
