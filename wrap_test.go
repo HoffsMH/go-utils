@@ -201,6 +201,8 @@ asdf asdf asdf
 
 	result := Wrap(content, 20)
 	if result != expected {
+    fmt.Printf("result %s", result)
+    fmt.Printf("expected %s", expected)
 		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
 	}
 }

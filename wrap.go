@@ -2,11 +2,7 @@ package util
 
 import (
 	"bytes"
-	"strings"
-	"unicode"
 )
-
-const nbsp = 0xA0
 
 type NewContent struct {
 	WordBuf          *bytes.Buffer
@@ -14,6 +10,44 @@ type NewContent struct {
 	Value            *bytes.Buffer
 	CurrentLineIndex int
 	Lim              int
+}
+
+func (nc *NewContent) resetWordBuf()  {
+  nc.WordBuf.Reset();
+}
+
+func (nc *NewContent) writeWordBuf() {
+  nc.WordBuf.WriteTo(nc.Value)
+}
+
+func (nc *NewContent) resetSpaceBuf()  {
+  nc.SpaceBuf.Reset();
+}
+
+func (nc *NewContent) writeSpaceBuf() {
+  nc.SpaceBuf.WriteTo(nc.Value)
+}
+
+func (nc *NewContent) dumpWordBuf()  {
+  nc.writeWordBuf()
+  nc.resetWordBuf()
+}
+
+func (nc *NewContent) dumpSpaceBuf()  {
+  nc.writeSpaceBuf()
+  nc.resetSpaceBuf()
+}
+
+func (nc *NewContent) incSpaceBuf()  {
+  nc.SpaceBuf.WriteRune(' ')
+}
+
+func (nc *NewContent) incWordBuf(char rune)  {
+  nc.WordBuf.WriteRune(char)
+}
+
+func (nc *NewContent) addNewline()  {
+  nc.Value.WriteRune('\n')
 }
 
 func Wrap(content string, lim int) string {
@@ -46,63 +80,67 @@ func Wrap(content string, lim int) string {
 	return string(newContent.Value.String())
 }
 
-func handleNonWhitespace(i int, char rune, content string, newContent *NewContent) {
-	wordBuf := newContent.WordBuf
-	spaceBuf := newContent.SpaceBuf
-	value := newContent.Value
-	lim := newContent.Lim
+func handleNonWhitespace(i int, char rune, content string, nc *NewContent) {
+	wordBuf := nc.WordBuf
+	value := nc.Value
+	lim := nc.Lim
 
 	wordBuf.WriteRune(char)
 
 	if i == len(content)-1 {
-		if newContent.CurrentLineIndex > lim {
+		if nc.CurrentLineIndex > lim {
 			value.WriteRune('\n')
-			wordBuf.WriteTo(value)
+      nc.dumpWordBuf()
 			return
 		}
-		spaceBuf.WriteTo(value)
-		wordBuf.WriteTo(value)
+    nc.dumpSpaceBuf()
+    nc.dumpWordBuf()
 		return
 	}
 }
 
-func isPastLim(newContent *NewContent) bool {
-	currentLineIndex := newContent.CurrentLineIndex
-	lim := newContent.Lim
+func (nc *NewContent) isPastOrAtLim() bool {
+	currentLineIndex := nc.CurrentLineIndex
+	lim := nc.Lim
 
 	return currentLineIndex >= lim
 }
 
-func handleSpace(i int, char rune, newContent *NewContent) {
-	wordBuf := newContent.WordBuf
-	spaceBuf := newContent.SpaceBuf
-	value := newContent.Value
-	lim := newContent.Lim
-	currentLineIndex := newContent.CurrentLineIndex
+func (nc *NewContent) isPastLim() bool {
+  currentLineIndex := nc.CurrentLineIndex
+  lim := nc.Lim
 
-	newContent.CurrentLineIndex++
-	Debug.Println("in handleSpace:")
-	Debug.Println("newContent.value", newContent.Value.String())
-
-	if currentLineIndex >= lim {
-		value.WriteRune('\n')
-		spaceBuf.Reset()
-		newContent.CurrentLineIndex = wordBuf.Len()
-	} else {
-		spaceBuf.WriteTo(value)
-	}
-	wordBuf.WriteTo(value)
-	wordBuf.Reset()
-	spaceBuf.Reset()
-	spaceBuf.WriteRune(char)
+  return currentLineIndex > lim
 }
 
-func handleNewline(i int, char rune, content string, newContent *NewContent) {
-	wordBuf := newContent.WordBuf
-	spaceBuf := newContent.SpaceBuf
-	value := newContent.Value
-	lim := newContent.Lim
-	currentLineIndex := newContent.CurrentLineIndex
+
+func handleSpace(i int, char rune, nc *NewContent) {
+	wordBuf := nc.WordBuf
+
+	nc.CurrentLineIndex++
+	Debug.Println("in handleSpace:")
+	Debug.Println("newContent", nc)
+  t := true
+	if nc.isPastOrAtLim() {
+		nc.addNewline()
+    nc.resetSpaceBuf()
+		nc.CurrentLineIndex = wordBuf.Len()
+	} else {
+    t = false
+    nc.writeSpaceBuf()
+	}
+  nc.dumpWordBuf()
+  nc.resetSpaceBuf()
+  if (t == false) {
+    nc.incSpaceBuf()
+  }
+}
+
+func handleNewline(i int, char rune, content string, nc *NewContent) {
+	spaceBuf := nc.SpaceBuf
+	value := nc.Value
+	lim := nc.Lim
+	currentLineIndex := nc.CurrentLineIndex
 
 	// If we have a double newline that represents a paragraph
 	// so I want to immeadialy append the 2 newlines
@@ -111,16 +149,15 @@ func handleNewline(i int, char rune, content string, newContent *NewContent) {
 		value.WriteRune('\n')
 		value.WriteRune('\n')
 		spaceBuf.Reset()
-		newContent.CurrentLineIndex = 0
+		nc.CurrentLineIndex = 0
 		return
 	}
 
 	// we need to wrap and current char is a newline
 	if currentLineIndex > lim {
 		value.WriteRune(char)
-		newContent.CurrentLineIndex = 0
-		wordBuf.WriteTo(value)
-		wordBuf.Reset()
+		nc.CurrentLineIndex = 0
+    nc.dumpWordBuf()
 		if i == len(content)-1 {
 			value.WriteRune('\n')
 		}
@@ -130,8 +167,8 @@ func handleNewline(i int, char rune, content string, newContent *NewContent) {
 
 	// the entire input ends in newline
 	if i == len(content)-1 {
-		spaceBuf.WriteTo(value)
-		wordBuf.WriteTo(value)
+    nc.dumpSpaceBuf()
+    nc.dumpWordBuf()
 		value.WriteRune(char)
 		return
 	}
@@ -146,88 +183,11 @@ func handleNewline(i int, char rune, content string, newContent *NewContent) {
 
 	// if we are before the limit treat the newline as a space and write
 	if currentLineIndex < lim {
-		spaceBuf.WriteTo(value)
-		wordBuf.WriteTo(value)
-		spaceBuf.Reset()
-		wordBuf.Reset()
+    nc.dumpSpaceBuf()
+    nc.dumpWordBuf()
 		spaceBuf.WriteRune(' ')
-		newContent.CurrentLineIndex++
+		nc.CurrentLineIndex++
 		return
 	}
 }
 
-// WrapString wraps the given string within lim width in characters.
-//
-// Wrapping is currently naive and only happens at white-space. A future
-// version of the library will implement smarter wrapping. This means that
-// pathological cases can dramatically reach past the limit, such as a very
-// long word.
-func WrapString(s string, lim uint) string {
-	// Initialize a buffer with a slightly larger size to account for breaks
-	init := make([]byte, 0, len(s))
-	buf := bytes.NewBuffer(init)
-
-	var current uint
-	var wordBuf, spaceBuf bytes.Buffer
-	var wordBufLen, spaceBufLen uint
-
-	for _, char := range s {
-		if char == '\n' {
-			// does the text begin with a newline?
-			if wordBuf.Len() == 0 {
-				if current+spaceBufLen > lim {
-					current = 0
-				} else {
-					current += spaceBufLen
-					spaceBuf.WriteTo(buf)
-				}
-				spaceBuf.Reset()
-				spaceBufLen = 0
-			} else {
-				current += spaceBufLen + wordBufLen
-				spaceBuf.WriteTo(buf)
-				spaceBuf.Reset()
-				spaceBufLen = 0
-				wordBuf.WriteTo(buf)
-				wordBuf.Reset()
-				wordBufLen = 0
-			}
-			buf.WriteRune(char)
-			current = 0
-		} else if unicode.IsSpace(char) && char != nbsp {
-			if spaceBuf.Len() == 0 || wordBuf.Len() > 0 {
-				current += spaceBufLen + wordBufLen
-				spaceBuf.WriteTo(buf)
-				spaceBuf.Reset()
-				spaceBufLen = 0
-				wordBuf.WriteTo(buf)
-				wordBuf.Reset()
-				wordBufLen = 0
-			}
-
-			spaceBuf.WriteRune(char)
-			spaceBufLen++
-		} else {
-			wordBuf.WriteRune(char)
-			wordBufLen++
-
-			if current+wordBufLen+spaceBufLen > lim && wordBufLen < lim {
-				buf.WriteRune('\n')
-				current = 0
-				spaceBuf.Reset()
-				spaceBufLen = 0
-			}
-		}
-	}
-
-	if wordBuf.Len() == 0 {
-		if current+spaceBufLen <= lim {
-			spaceBuf.WriteTo(buf)
-		}
-	} else {
-		spaceBuf.WriteTo(buf)
-		wordBuf.WriteTo(buf)
-	}
-
-	return strings.Trim(string(buf.String()), " ")
-}
