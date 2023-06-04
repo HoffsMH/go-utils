@@ -15,37 +15,36 @@ type Result struct {
 	FileCount int
 }
 
-
 // Search searches for the given search terms in the given directories.
 func Search(searchTerms []string, dirs []string) []Result {
-  var wg sync.WaitGroup;
-  results := make([]Result, 0, len(searchTerms))
-  resultChan := make(chan Result) // what is being transmitted through the
+	var wg sync.WaitGroup
+	results := make([]Result, 0, len(searchTerms))
+	resultChan := make(chan Result) // what is being transmitted through the
 	for _, term := range searchTerms {
-    wg.Add(1)
-    go func(term string) {
-      defer wg.Done();
+		wg.Add(1)
+		go func(term string) {
+			defer wg.Done()
 
-      result := Result{Term: term, FileCount: 0}
-      for _, subTerm := range strings.Split(term, " ") {
-        for _, dir := range dirs {
-          if len(subTerm) > 0 {
-            result.FileCount += SearchFor(subTerm, dir)
-          }
-        }
-      }
-      // send result to channel
-      resultChan <- result
-    }(term)
+			result := Result{Term: term, FileCount: 0}
+			for _, subTerm := range strings.Split(term, " ") {
+				for _, dir := range dirs {
+					if len(subTerm) > 0 {
+						result.FileCount += SearchFor(subTerm, dir)
+					}
+				}
+			}
+			// send result to channel
+			resultChan <- result
+		}(term)
 	}
-  go func() {
-    wg.Wait()
-    close(resultChan)
-  }()
+	go func() {
+		wg.Wait()
+		close(resultChan)
+	}()
 
-  for result := range resultChan {
-      results = append(results, result)
-  }
+	for result := range resultChan {
+		results = append(results, result)
+	}
 
 	sort.Slice(results, func(i, j int) bool {
 		return results[i].FileCount > results[j].FileCount

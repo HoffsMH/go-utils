@@ -24,6 +24,7 @@ var rootCmd = &cobra.Command{
       num = 80
     }
 
+
     inputString := util.Stdin()
     if inputString != "" {
        fmt.Print(util.Wrap(inputString, num))
@@ -39,6 +40,9 @@ var rootCmd = &cobra.Command{
 }
 
 func main() {
+  isDev := os.Getenv("DEV") == "true"
+  util.Init(&isDev)
+
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

@@ -5,8 +5,8 @@ import (
 )
 
 func TestGetTermsEmpty(t *testing.T) {
-  content := []string{}
-  expected := 0
+	content := []string{}
+	expected := 0
 	result := len(GetTerms(content))
 
 	if result != expected {

@@ -21,7 +21,7 @@ type TitleGetter interface {
 	GetTitle(line string) string
 }
 
-type GetTitleWrapper struct {}
+type GetTitleWrapper struct{}
 
 // given a multiline string, append html title to previous lines that are http links
 // given:
@@ -41,8 +41,8 @@ func (a *HtmlTitleAppender) Call(content []string) string {
 		result := linkTest.FindStringSubmatch(line)
 
 		if len(result) > 0 && !isAlreadyTitled(newContent) {
-      title := a.GetTitle(line)
-      newContent = append(newContent, FormatTitle(title))
+			title := a.GetTitle(line)
+			newContent = append(newContent, FormatTitle(title))
 		}
 
 		newContent = append(newContent, line)
@@ -52,8 +52,8 @@ func (a *HtmlTitleAppender) Call(content []string) string {
 }
 
 func (gt *GetTitleWrapper) GetTitle(url string) string {
-  html, _ := getHtml(url)
-  return getTitle(html)
+	html, _ := getHtml(url)
+	return getTitle(html)
 }
 
 func getHtml(url string) (*html.Node, error) {
@@ -84,7 +84,7 @@ func getTitle(n *html.Node) string {
 		return n.FirstChild.Data
 	}
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-    title := getTitle(c)
+		title := getTitle(c)
 		if title != "" {
 			return title
 		}

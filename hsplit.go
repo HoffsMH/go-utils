@@ -15,22 +15,21 @@ type FileContent struct {
 	Dir     string
 }
 
-
 type Hsplitter struct {
-  Clock clock.Clock
-  Os OsInterface
+	Clock clock.Clock
+	Os    OsInterface
 }
 
-func NewHsplitter(opts ...interface{}) (*Hsplitter) {
-  newClock := clock.New();
-  if len(opts) > 0 {
-    newClock = opts[0].(clock.Clock)
-  }
+func NewHsplitter(opts ...interface{}) *Hsplitter {
+	newClock := clock.New()
+	if len(opts) > 0 {
+		newClock = opts[0].(clock.Clock)
+	}
 
-  return &Hsplitter {
-    Clock: newClock,
-    Os: &OsWrapper{},
-  }
+	return &Hsplitter{
+		Clock: newClock,
+		Os:    &OsWrapper{},
+	}
 }
 
 // given text that contains some lines that begin with ## (h2 heading in md)

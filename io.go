@@ -3,17 +3,29 @@ package util
 import (
 	"bufio"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 )
 
+var Debug *log.Logger = log.New(ioutil.Discard, "", 0)
+
+func Init(isDev *bool) {
+	if *isDev {
+		Debug = log.New(os.Stdout,
+			"DEBUG: ",
+			log.Ldate|log.Ltime|log.Lshortfile)
+	}
+}
+
 type OsInterface interface {
-  WriteFile(name string, data []byte, perm os.FileMode) error
+	WriteFile(name string, data []byte, perm os.FileMode) error
 }
 
 type OsWrapper struct{}
 
 func (o *OsWrapper) WriteFile(name string, data []byte, perm os.FileMode) error {
-    return os.WriteFile(name, data, perm)
+	return os.WriteFile(name, data, perm)
 }
 
 // GetTerms ...
@@ -45,7 +57,7 @@ func Stdin() string {
 	if err == nil && (fi.Mode()&os.ModeCharDevice) == 0 {
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
-			content += scanner.Text()
+			content += scanner.Text() + "\n"
 		}
 		return content
 	}
@@ -53,12 +65,12 @@ func Stdin() string {
 }
 
 func StdinLines() []string {
-    var lines []string
-    scanner := bufio.NewScanner(os.Stdin)
-    for scanner.Scan() {
-        lines = append(lines, scanner.Text())
-    }
-    return lines
+	var lines []string
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	return lines
 }
 
 func readFile(filename string) (string, error) {
@@ -72,4 +84,3 @@ func truncateString(str string, length int) string {
 	}
 	return str
 }
-
