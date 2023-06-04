@@ -204,3 +204,29 @@ asdf asdf asdf
 		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
 	}
 }
+
+func TestWrapPreservesSpaces(t *testing.T) {
+	content := `asdf asdf asdf asdf
+asdfghjkl`
+
+	expected := `asdf asdf asdf
+asdf asdfghjkl`
+
+	result := Wrap(content, 18)
+	if result != expected {
+		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
+	}
+}
+
+func TestWrapStripsTrailingSpaces(t *testing.T) {
+	content := `asdf asdf asdf asdf 
+asdfghjkl`
+
+	expected := `asdf asdf asdf
+asdf asdfghjkl`
+
+	result := Wrap(content, 18)
+	if result != expected {
+		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
+	}
+}

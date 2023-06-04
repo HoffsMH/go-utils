@@ -17,6 +17,7 @@ type NewContent struct {
 }
 
 func Wrap(content string, lim int) string {
+	Debug.Println("content: ", content)
 	newContent := &NewContent{
 		Lim:      lim,
 		WordBuf:  bytes.NewBuffer([]byte{}),
@@ -64,6 +65,7 @@ func handleNonWhitespace(i int, char rune, content string, newContent *NewConten
 		return
 	}
 }
+
 func isPastLim(newContent *NewContent) bool {
 	currentLineIndex := newContent.CurrentLineIndex
 	lim := newContent.Lim
@@ -79,9 +81,12 @@ func handleSpace(i int, char rune, newContent *NewContent) {
 	currentLineIndex := newContent.CurrentLineIndex
 
 	newContent.CurrentLineIndex++
+	Debug.Println("in handleSpace:")
+	Debug.Println("newContent.value", newContent.Value.String())
 
 	if currentLineIndex >= lim {
 		value.WriteRune('\n')
+		spaceBuf.Reset()
 		newContent.CurrentLineIndex = wordBuf.Len()
 	} else {
 		spaceBuf.WriteTo(value)
