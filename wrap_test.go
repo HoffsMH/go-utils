@@ -221,11 +221,31 @@ asdf asdfghjkl`
 }
 
 func TestWrapStripsTrailingSpaces(t *testing.T) {
+  // isDev := true
+  // Init(&isDev)
 	content := `asdf asdf asdf asdf 
 asdfghjkl`
 
 	expected := `asdf asdf asdf
 asdf asdfghjkl`
+
+	result := Wrap(content, 18)
+	if result != expected {
+		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
+	}
+}
+
+func TestWrapStripsTrailingSpaces2(t *testing.T) {
+  // t.Skip()
+  // isDev := true
+  // Init(&isDev)
+
+	content := `asdf asdf asdf asdf iasdf 
+asdfghjkl`
+
+	expected := `asdf asdf asdf
+asdf iasdf
+asdfghjkl`
 
 	result := Wrap(content, 18)
 	if result != expected {

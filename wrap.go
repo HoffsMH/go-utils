@@ -64,8 +64,14 @@ func (nc *NewContent) isPastLim() bool {
   return currentLineIndex > lim
 }
 
+func (nc *NewContent) isAtLim() bool {
+  currentLineIndex := nc.CurrentLineIndex
+  lim := nc.Lim
+
+  return currentLineIndex == lim
+}
+
 func Wrap(content string, lim int) string {
-  Debug.Println("content: ", content)
   newContent := &NewContent{
     Lim:      lim,
     WordBuf:  bytes.NewBuffer([]byte{}),
@@ -95,14 +101,20 @@ func Wrap(content string, lim int) string {
 }
 
 func handleNonWhitespace(i int, char rune, content string, nc *NewContent) {
-  wordBuf := nc.WordBuf
   value := nc.Value
-  lim := nc.Lim
 
-  wordBuf.WriteRune(char)
+  nc.incWordBuf(char)
+  Debug.Println("======================")
+  Debug.Println("in non whitespace")
+  Debug.Println("i: ", i)
+  Debug.Println("char: ", string(char))
+  Debug.Println("content: ", content)
+  Debug.Println("nc: ", nc)
+  Debug.Println("nc.SpaceBuf.Len(): ", nc.SpaceBuf.Len())
+  Debug.Println("nc.WordBuf.Len(): ", string(nc.WordBuf.Bytes()))
 
   if i == len(content)-1 {
-    if nc.CurrentLineIndex > lim {
+    if nc.isPastLim() {
       value.WriteRune('\n')
       nc.dumpWordBuf()
       return
@@ -114,29 +126,51 @@ func handleNonWhitespace(i int, char rune, content string, nc *NewContent) {
 }
 
 func handleSpace(i int, char rune, nc *NewContent) {
-  wordBuf := nc.WordBuf
 
   nc.CurrentLineIndex++
-  Debug.Println("in handleSpace:")
-  Debug.Println("newContent", nc)
-  t := true
-  if nc.isPastOrAtLim() {
+
+  Debug.Println("======================")
+  Debug.Println("in Space")
+  Debug.Println("i: ", i)
+  Debug.Println("char: ", string(char))
+  Debug.Println("nc: ", nc)
+  Debug.Println("nc.SpaceBuf.Len(): ", nc.SpaceBuf.Len())
+  Debug.Println("nc.WordBuf.Len(): ", string(nc.WordBuf.Bytes()))
+  if nc.isAtLim() {
+    Debug.Println("at lim")
+    nc.dumpSpaceBuf()
+    nc.dumpWordBuf()
     nc.addNewline()
+    nc.CurrentLineIndex = 0
+    return
+  }
+
+  if nc.isPastLim() {
+    nc.addNewline()
+    nc.CurrentLineIndex = nc.WordBuf.Len()
+    nc.dumpWordBuf()
     nc.resetSpaceBuf()
-    nc.CurrentLineIndex = wordBuf.Len()
-  } else {
-    t = false
-    nc.writeSpaceBuf()
-  }
-  nc.dumpWordBuf()
-  nc.resetSpaceBuf()
-  if (t == false) {
     nc.incSpaceBuf()
+    nc.CurrentLineIndex += nc.SpaceBuf.Len()
+    return
   }
+
+  nc.dumpSpaceBuf()
+  nc.dumpWordBuf()
+  nc.incSpaceBuf()
 }
 
 func handleNewline(i int, char rune, content string, nc *NewContent) {
   currentLineIndex := nc.CurrentLineIndex
+
+  Debug.Println("======================")
+  Debug.Println("in Handle Newline")
+  Debug.Println("i: ", i)
+  Debug.Println("char: ", char)
+  Debug.Println("content: ", content)
+  Debug.Println("nc: ", nc)
+  Debug.Println("nc.SpaceBuf.Len(): ", nc.SpaceBuf.Len())
+  Debug.Println("nc.WordBuf.Len(): ", string(nc.WordBuf.Bytes()))
 
   // If we have a double newline that represents a paragraph
   // so I want to immeadialy append the 2 newlines
@@ -178,7 +212,7 @@ func handleNewline(i int, char rune, content string, nc *NewContent) {
   }
 
   // if we are before the limit treat the newline as a space and write
-  if !nc.isPastOrAtLim() {
+  if !nc.isPastOrAtLim() && nc.WordBuf.Len() > 0 {
     nc.dumpSpaceBuf()
     nc.dumpWordBuf()
     nc.incSpaceBuf()
