@@ -57,7 +57,14 @@ func (gt *GetTitleWrapper) GetTitle(url string) string {
 }
 
 func getHtml(url string) (*html.Node, error) {
-	resp, err := http.Get(url)
+// Create a http.Client with a custom CheckRedirect function
+	client := &http.Client{
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return nil // follow redirect
+		},
+	}
+
+  resp, err := client.Get(url)
 	if err != nil {
 		log.Println("HTTP error:", err)
 		return nil, err
