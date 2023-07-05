@@ -12,8 +12,14 @@ var rootCmd = &cobra.Command{
 	Use: "hcat",
 	Args: cobra.MinimumNArgs(0),
   Run: func(cmd *cobra.Command, args []string) {
-		terms := util.GetTerms(args)
-		fmt.Print(util.Hcat(terms))
+		terms := util.StdinLines()
+
+    if len(args) == 0 {
+      wd, _ := os.Getwd()
+      fmt.Print(util.Hcat(terms, wd))
+    } else {
+      fmt.Print(util.Hcat(terms, args[0]))
+    }
   },
 }
 

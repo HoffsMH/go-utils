@@ -3,7 +3,6 @@ package util
 import (
 	"log"
 	"path"
-	"path/filepath"
 	"strings"
 )
 
@@ -28,24 +27,20 @@ func ensureNewline(s string) string {
 //  ## file2.md
 //  ok"
 
-// # ls $somedir | tfilter | sort | hcat > $somefile
+// # ls $somedir | sort | hcat > $somefile
 
 // Hcat ...
-func Hcat(filenames []string) string {
+func Hcat(filenames []string, dir string) string {
 	var text string
 	for _, filename := range filenames {
-		abs, err := filepath.Abs(filename)
+
+		content, err := readFile(path.Join(dir, filename))
+
 		if err != nil {
 			log.Fatalf("failed to Hcat: %s", err)
 		}
 
-		basename := path.Base(abs)
-		content, err := readFile(abs)
-		if err != nil {
-			log.Fatalf("failed to Hcat: %s", err)
-		}
-
-		text += ensureNewline(plainTextHeading + " " + basename)
+		text += ensureNewline(plainTextHeading + " " +  filename)
 		text += ensureNewline(content)
 	}
 
