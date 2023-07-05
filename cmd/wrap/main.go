@@ -14,7 +14,7 @@ var chars int
 
 var rootCmd = &cobra.Command{
 	Use: "wrap",
-	Long: "outputs a file name to std out with a date prefix if it does not already have one",
+	Long: "",
 	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
     var num int
