@@ -9,6 +9,7 @@ import (
 )
 
 var Debug *log.Logger = log.New(ioutil.Discard, "", 0)
+var Info *log.Logger = log.New(ioutil.Discard, "", 0)
 
 func Init(isDev *bool) {
 	if *isDev {
