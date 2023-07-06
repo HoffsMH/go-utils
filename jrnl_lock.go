@@ -29,7 +29,7 @@ func JrnlLock(relPath string) string {
 
 	matches, err := filepath.Glob(mdPattern)
 
-	tar(matches)
+	tar(matches, relPath)
 
 	encrypt(abs)
 
@@ -52,8 +52,8 @@ func shredFiles(matches []string) {
 	wg.Wait()
 }
 
-func tar(matches []string) {
-	tarName := genTarName(matches)
+func tar(matches []string, relPath string) {
+	tarName := genTarName(matches, relPath)
 
 	xargs := []string{"-cf", tarName}
 	xargs = append(xargs, matches...)
@@ -69,8 +69,8 @@ func tar(matches []string) {
 	shredFiles(matches)
 }
 
-func genTarName(matches []string) string {
-	totalContent := Hcat(matches)
+func genTarName(matches []string, relPath string) string {
+	totalContent := Hcat(matches, relPath)
 	shaText := sha(totalContent)
 	datePrefix := time.Now().Format(time.RFC3339)
 	return datePrefix + "-" + shaText + ".tar"

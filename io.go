@@ -20,6 +20,7 @@ func Init(isDev *bool) {
 }
 
 type OsInterface interface {
+  MkdirAll(path string, perm os.FileMode) error
 	WriteFile(name string, data []byte, perm os.FileMode) error
 }
 
@@ -27,6 +28,10 @@ type OsWrapper struct{}
 
 func (o *OsWrapper) WriteFile(name string, data []byte, perm os.FileMode) error {
 	return os.WriteFile(name, data, perm)
+}
+
+func (o *OsWrapper) MkdirAll(path string, perm os.FileMode) error {
+  return os.MkdirAll(path, perm)
 }
 
 // GetTerms ...

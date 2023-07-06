@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"os"
 	"path"
 	"path/filepath"
@@ -56,9 +57,32 @@ func (h *Hsplitter) Call(lines []string, dir string) {
 			result = append([]FileContent{h.newFileContent(match[1], dir)}, result...)
 		}
 	}
+	result = compressDuplicateFileContents(result)
 	result = pruneEmptyFileContents(result)
 
 	h.WriteSplits(result)
+}
+
+func compressDuplicateFileContents(fcs []FileContent) []FileContent {
+  var compressed []FileContent
+
+  // proceed in reverse order
+  for i := len(fcs) - 1; i >= 0; i-- {
+    found := false
+    fc := fcs[i]
+    for i, c := range compressed {
+      if c.Name == fc.Name {
+        found = true
+        compressed[i].Content += fc.Content
+      }
+    }
+
+    if !found {
+      compressed = append(compressed, fc)
+    }
+  }
+
+  return compressed
 }
 
 func pruneEmptyFileContents(fcs []FileContent) []FileContent {
@@ -78,19 +102,23 @@ func pruneEmptyFileContents(fcs []FileContent) []FileContent {
 
 func (h *Hsplitter) newFileContent(name string, dir string) FileContent {
 	dir, _ = filepath.Abs(dir)
-	if _, err := parseDateFileName(name); err != nil {
-		name = NewPrefixer(h.Clock).prependCurrentDate(name)
-	}
 
 	return FileContent{
 		Dir:     dir,
-		Name:    path.Base(name),
+		Name:    name,
 		Content: "",
 	}
 }
 
 func (h *Hsplitter) WriteSplits(fcs []FileContent) {
 	for _, fc := range fcs {
-		h.Os.WriteFile(path.Join(fc.Dir, fc.Name), []byte(fc.Content), 0644)
+    filePath := path.Join(fc.Dir, fc.Name)
+
+    dir := filepath.Dir(filePath)
+    if err := h.Os.MkdirAll(dir, 0755); err != nil {
+      fmt.Println("Error creating directory:", err)
+    }
+		h.Os.WriteFile(filePath, []byte(fc.Content), 0644)
+    fmt.Println(filePath)
 	}
 }
