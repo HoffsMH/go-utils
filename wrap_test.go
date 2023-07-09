@@ -252,3 +252,27 @@ asdfghjkl`
 		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
 	}
 }
+
+func TestWrapShouldNotStripNeededSpaces(t *testing.T) {
+  // t.Skip()
+  // isDev := true
+  // Init(&isDev)
+
+	content := `asdf assdf asdf asdf asdf asdf asdf asdf asdf
+asjsdf asdf asdf asdf asdf asdf asdf asdf asdf
+asldf asdf asdf asdf asdf asdf asdf asdf asdf
+asdfghjkl`
+
+	expected := `asdf asdf asdf
+asdf iasdf
+asdfghjkl`
+
+	result := Wrap(content, 18)
+  fmt.Println("============================")
+  fmt.Printf("result %s", result)
+  fmt.Println("============================")
+  fmt.Printf("expected %s", expected)
+	if result != expected {
+		t.Errorf("Wrap(%q) = %q; expected %q", content, result, expected)
+	}
+}
